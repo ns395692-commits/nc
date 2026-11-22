@@ -1,0 +1,1970 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>SKYBOUND'S ELITE</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B1F3A">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700;800&family=Inter:wght@400;600;700&display=swap">
+<style>
+:root{--navy:#0B1F3A;--navy2:#16325C;--ink:#0B1F3A;--muted:#5b6b82;--line:#dfe6f0;--green:#1E8E5A;--red:#C6402B;--gold:#E8A320}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:#F4F7FB;color:var(--ink);
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+h1,h2,h3{font-family:Rajdhani,sans-serif;margin:8px 0;color:var(--navy)}
+.brand{text-align:center;letter-spacing:1px;margin-top:24px}
+button{font:inherit;font-weight:700;border:0;border-radius:12px;padding:12px 16px;background:var(--navy);color:#fff;cursor:pointer}
+button.ghost{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+button.danger{background:var(--red)}
+button.small{padding:7px 10px;font-size:13px}
+button:disabled{opacity:.45;cursor:not-allowed}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit;margin:6px 0 12px;background:#fff}
+textarea{font-family:monospace;font-size:13px}
+input[type=checkbox]{width:auto;margin:0 8px 0 0}
+label{display:block;font-size:14px;color:var(--muted)}
+.auth,.wrap{max-width:560px;margin:0 auto;padding:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.card small,.row small{display:block;color:var(--muted)}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;margin-left:6px}
+.topbar,.exam-top{background:var(--navy);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;position:sticky;top:0;z-index:5}
+.topbar small{display:block;color:#b9c7dc}
+.clock{font-family:Rajdhani,sans-serif;font-size:20px;background:var(--gold);color:var(--navy);padding:4px 12px;border-radius:10px}
+.clock.low{background:var(--red);color:#fff}
+.tabs{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
+.tabs button{flex:1;background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.tabs button.on{background:var(--navy);color:#fff}
+.palette{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;background:#fff;border-bottom:1px solid var(--line)}
+.qd{flex:0 0 auto;width:34px;height:34px;padding:0;background:#fff;color:var(--navy);border:1px solid var(--line)}
+.qd.ans{background:var(--green);color:#fff}
+.qd.mk{background:#7A4FC0;color:#fff}
+.qd.cur{outline:2px solid var(--navy)}
+.qbox{padding:16px;max-width:560px;margin:0 auto}
+.qhead{color:var(--muted);font-size:13px}
+.qtext{font-size:17px;line-height:1.5;font-weight:600}
+.opt{display:flex;gap:12px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer}
+.opt input{display:none}
+.opt.sel{border-color:var(--navy);background:#EDF2FA}
+.opt.static{cursor:default}
+.opt.good{border-color:var(--green);background:#E1F5EC}
+.opt.bad{border-color:var(--red);background:#FBE6E1}
+.opt .L{width:28px;height:28px;border-radius:50%;background:#E9EEF6;display:flex;align-items:center;justify-content:center;font-weight:700;flex:0 0 auto}
+.exam-foot{position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;gap:8px;padding:10px;flex-wrap:wrap}
+.exam-foot button{flex:1}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat-grid div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stat-grid b{display:block;font-family:Rajdhani,sans-serif;font-size:20px}
+.stat-grid small{color:var(--muted)}
+.lb{padding:10px;border-bottom:1px solid var(--line)}
+.lb.me{background:#FFF7DE}
+.sol{background:#F4F7FB;border-radius:10px;padding:10px;font-size:14px}
+.err{color:var(--red);font-size:14px}
+.ok{color:var(--green);font-size:14px}
+.muted{color:var(--muted);font-size:14px}
+.credit{text-align:center;font-size:12px;color:var(--muted);padding:16px}
+.credit a{color:var(--navy)}
+.admin-nav{display:flex;gap:6px;flex-wrap:wrap;padding:10px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.admin-nav button{padding:8px 12px;font-size:13px}
+
+/* ===== ANIMATIONS ===== */
+button{transition:transform .12s,filter .2s,box-shadow .2s}
+button:active:not(:disabled){transform:scale(.95)}
+@media (hover:hover){button:hover:not(:disabled){filter:brightness(1.15)}.card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(11,31,58,.12)}}
+.card{transition:transform .2s,box-shadow .2s;animation:rise .45s ease backwards}
+.card:nth-child(2){animation-delay:.05s}.card:nth-child(3){animation-delay:.1s}.card:nth-child(4){animation-delay:.15s}.card:nth-child(5){animation-delay:.2s}
+.wrap,.auth{animation:fadeUp .4s ease backwards}
+.topbar{background:linear-gradient(90deg,#0B1F3A,#16325C,#0B1F3A);background-size:200% 100%;animation:pan 8s linear infinite}
+.brand{background:linear-gradient(90deg,#0B1F3A 20%,#E8A320 50%,#0B1F3A 80%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:shine 3.5s linear infinite}
+.ns{color:var(--gold);animation:nsglow 2.4s ease-in-out infinite}
+button[data-act=start]{background:var(--green);animation:ring 1.6s ease-out infinite}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#e33;margin-left:6px;animation:blink 1s infinite}
+.clock.low{animation:blink 1s infinite}
+.opt{transition:border-color .15s,background .15s}
+.opt.sel{animation:pulse .28s ease}
+.opt.good{animation:glow 1.8s ease-out}
+.qbox.slide{animation:slide .28s ease}
+.bar{transform-box:fill-box;transform-origin:50% 100%;animation:grow .8s cubic-bezier(.2,.8,.2,1) backwards}
+.lb{animation:rise .4s ease backwards}
+.lb.top1{background:linear-gradient(90deg,#FFF3C4,#fff);border-left:4px solid #E8A320;animation:rise .4s ease backwards,gold 2s ease-in-out infinite}
+.lb.top2{border-left:4px solid #b8c2d1}.lb.top3{border-left:4px solid #c9803a}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+.confetti i{position:absolute;top:-14px;width:8px;height:14px;border-radius:2px;animation:fall linear forwards}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}}
+@keyframes rise{from{opacity:0;transform:translateY(18px) scale(.98)}}
+@keyframes pan{to{background-position:-200% 0}}
+@keyframes shine{to{background-position:-200% 0}}
+@keyframes nsglow{50%{text-shadow:0 0 10px rgba(232,163,32,.95)}}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(30,142,90,.55)}100%{box-shadow:0 0 0 14px rgba(30,142,90,0)}}
+@keyframes blink{50%{opacity:.25}}
+@keyframes pulse{40%{transform:scale(1.025)}}
+@keyframes glow{0%{box-shadow:0 0 0 0 rgba(30,142,90,.6)}100%{box-shadow:0 0 0 12px rgba(30,142,90,0)}}
+@keyframes slide{from{opacity:0;transform:translateX(28px)}}
+@keyframes grow{from{transform:scaleY(0)}}
+@keyframes gold{50%{box-shadow:0 0 14px rgba(232,163,32,.55)}}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
+/* ===== SPLASH (jet + bomb + blast) ===== */
+#splash{position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at 50% 30%,#16325C 0%,#0B1F3A 55%,#050e1c 100%);overflow:hidden;animation:spOut .6s ease 4.3s forwards}
+#splash .scene{position:absolute;inset:0;animation:shake .5s linear 1.75s}
+.stars{position:absolute;top:0;left:0;width:2px;height:2px;border-radius:50%;background:#fff;animation:twk 2s infinite alternate;box-shadow:8vw 6vh #fff,22vw 14vh #cfe,41vw 5vh #fff,63vw 11vh #fff,78vw 4vh #cfe,91vw 16vh #fff,13vw 27vh #fff,55vw 31vh #cfe,86vw 33vh #fff,33vw 38vh #fff,70vw 24vh #fff,4vw 44vh #cfe,96vw 47vh #fff}
+.city{position:absolute;left:0;right:0;bottom:0;height:28%;background:linear-gradient(#10305a,#050e1c);clip-path:polygon(0 100%,0 58%,5% 58%,5% 38%,10% 38%,10% 52%,15% 52%,15% 24%,20% 24%,20% 46%,26% 46%,26% 60%,32% 60%,32% 34%,38% 34%,38% 50%,44% 50%,44% 28%,50% 28%,50% 55%,56% 55%,56% 40%,62% 40%,62% 62%,68% 62%,68% 30%,74% 30%,74% 48%,80% 48%,80% 36%,86% 36%,86% 58%,92% 58%,92% 42%,100% 42%,100% 100%)}
+.glow{position:absolute;left:0;right:0;bottom:0;height:34%;background:radial-gradient(ellipse at 52% 100%,rgba(255,120,30,.6),transparent 65%);opacity:0;animation:gl 2.4s ease-out 1.75s forwards}
+.jet{position:absolute;top:20%;left:0;width:min(36vw,190px);animation:fly 2.1s linear .1s both;filter:drop-shadow(0 0 8px rgba(232,163,32,.55))}
+.jet svg,.bomb svg{display:block;width:100%;height:auto}
+.fl{transform-box:fill-box;transform-origin:100% 50%;animation:flame .08s infinite alternate}
+.bomb{position:absolute;left:52vw;top:25%;width:18px;margin-left:-9px;opacity:0;animation:drop .75s cubic-bezier(.5,0,1,.7) 1s forwards}
+.blast{position:absolute;left:52vw;top:79%}
+.fire,.ring{position:absolute;left:0;top:0;border-radius:50%;opacity:0;transform:translate(-50%,-50%) scale(0)}
+.fire{width:170px;height:170px;background:radial-gradient(circle,#fff 0%,#ffd36b 25%,#ff7a1a 55%,rgba(200,40,10,0) 72%);animation:boom .9s ease-out 1.75s forwards}
+.ring{width:220px;height:220px;border:3px solid rgba(255,190,90,.9);animation:wave 1s ease-out 1.75s forwards}
+.ring.r2{border-color:rgba(255,255,255,.6);animation-delay:1.9s}
+#splash .flash{position:absolute;inset:0;background:#fff;opacity:0;animation:flash .5s ease-out 1.75s}
+.cap{position:absolute;left:0;right:0;top:36%;text-align:center}
+.ttl{font-family:Rajdhani,Impact,sans-serif;font-weight:800;font-size:clamp(28px,9vw,54px);letter-spacing:.06em;color:#fff;text-shadow:0 0 18px rgba(232,163,32,.8),0 0 40px rgba(232,163,32,.4)}
+.ttl span{display:inline-block;opacity:0;animation:pop .5s cubic-bezier(.2,1.4,.4,1) forwards}
+.sub{margin-top:14px;font:700 clamp(14px,4.2vw,20px) Rajdhani,sans-serif;color:#E8A320;letter-spacing:.3em;opacity:0;animation:subIn 1s ease 3s forwards}
+.sub::before,.sub::after{content:"";display:inline-block;width:0;height:2px;background:#E8A320;vertical-align:middle;margin:0 10px;animation:line .8s ease 3s forwards}
+.tag{margin-top:8px;color:#b9c7dc;font-size:12px;letter-spacing:.08em;opacity:0;animation:subIn .8s ease 3.4s forwards}
+.skip{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:12px;z-index:3;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:13px;padding:6px 12px;border-radius:999px}
+@keyframes fly{from{transform:translateX(-40vw)}to{transform:translateX(125vw)}}
+@keyframes flame{to{transform:scaleX(1.5);opacity:.7}}
+@keyframes drop{0%{opacity:1;transform:translateY(0) rotate(-8deg)}96%{opacity:1}100%{opacity:0;transform:translateY(54vh) rotate(6deg)}}
+@keyframes boom{0%{opacity:1;transform:translate(-50%,-50%) scale(.1)}60%{opacity:1;transform:translate(-50%,-50%) scale(1.6)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.4)}}
+@keyframes wave{0%{opacity:1;transform:translate(-50%,-50%) scale(.2)}100%{opacity:0;transform:translate(-50%,-50%) scale(3)}}
+@keyframes flash{0%{opacity:.85}100%{opacity:0}}
+@keyframes shake{0%,100%{transform:translate(0)}15%{transform:translate(-8px,5px)}30%{transform:translate(7px,-6px)}45%{transform:translate(-6px,-4px)}60%{transform:translate(5px,6px)}75%{transform:translate(-3px,2px)}}
+@keyframes pop{from{opacity:0;transform:translateY(40px) scale(1.8);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+@keyframes subIn{from{opacity:0;letter-spacing:.7em}to{opacity:1}}
+@keyframes line{to{width:clamp(24px,8vw,48px)}}
+@keyframes spOut{to{opacity:0;visibility:hidden}}
+@keyframes twk{from{opacity:.3}to{opacity:1}}
+@keyframes gl{0%{opacity:0}20%{opacity:1}100%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.qd.vis{background:#c9d4e5}
+.dark{background:#0b1322;color:#e8eef8}
+.dark body,body.dark{background:#0b1322;color:#e8eef8}
+body.dark .card,body.dark .lb,body.dark .opt,body.dark .palette,body.dark .admin-nav,body.dark input,body.dark textarea,body.dark .stat-grid div{background:#14213a;border-color:#27365a;color:#e8eef8}
+body.dark h1,body.dark h2,body.dark h3{color:#f3d27a}
+body.dark .muted,body.dark .card small,body.dark .row small{color:#9fb0c8}
+body.dark .qd{background:#14213a;color:#e8eef8;border-color:#27365a}
+body.dark .opt.sel{background:#1d2e52}
+body.dark .lb.me{background:#2a2a14}
+body.dark .sol{background:#1a2a48}
+@media print{.topbar,.exam-foot,button,.credit,#splash,.confetti,.admin-nav{display:none !important}body{background:#fff}}
+</style>
+</head>
+<body>
+<div id="app"><p class="muted" style="padding:20px">Loading...</p></div>
+<script>
+(function(){
+  var RM=!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+  function animateNums(root){
+    if(RM||!root)return;
+    root.querySelectorAll('b').forEach(function(el){
+      var m=el.textContent.trim().match(/^(#?)(-?\d+(?:\.\d+)?)(%?)$/);
+      if(!m)return;
+      var to=parseFloat(m[2]),dec=(m[2].split('.')[1]||'').length,t0=performance.now(),D=900;
+      (function step(now){
+        var p=Math.max(0,Math.min(1,(now-t0)/D)),e=1-Math.pow(1-p,3);
+        el.textContent=m[1]+(to*e).toFixed(dec)+m[3];
+        if(p<1)requestAnimationFrame(step);
+      })(t0);
+    });
+  }
+  function confetti(){
+    if(RM)return;
+    var w=document.createElement('div');w.className='confetti';
+    var c=['#E8A320','#1E8E5A','#C6402B','#16325C','#fff','#7A4FC0'];
+    for(var i=0;i<48;i++){
+      var p=document.createElement('i');
+      p.style.cssText='left:'+(Math.random()*100)+'%;background:'+c[i%6]+';animation-delay:'+(Math.random()*.6)+'s;animation-duration:'+(2+Math.random()*1.5)+'s;transform:rotate('+(Math.random()*360)+'deg)';
+      w.appendChild(p);
+    }
+    document.body.appendChild(w);
+    setTimeout(function(){w.remove();},4300);
+  }
+  window.SE={reduced:RM,animateNums:animateNums,confetti:confetti};
+
+  // Splash: ek session mein ek baar. Exam chal raha ho ya reduced-motion ho to nahi chalega.
+  var inExam=false,seen=false;
+  try{for(var i=0;i<localStorage.length;i++){if(localStorage.key(i).indexOf('se_exam_')===0)inExam=true;}}catch(e){}
+  try{seen=sessionStorage.getItem('se_splash')==='1';}catch(e){}
+  if(RM||inExam||seen)return;
+  try{sessionStorage.setItem('se_splash','1');}catch(e){}
+  var JET='<svg viewBox="-26 0 150 44"><path class="fl" d="M2 22 L-24 17 L-12 22 L-24 27Z" fill="#ffb02e"/><path class="fl" d="M2 22 L-14 20 L-8 22 L-14 24Z" fill="#fff"/><path d="M2 22 L38 15 L66 3 L80 3 L72 16 L106 18 L120 22 L106 26 L72 28 L80 41 L66 41 L38 29Z" fill="#d5deec"/><path d="M38 15 L66 3 L70 3 L48 17Z" fill="#9fb0c8"/><ellipse cx="86" cy="22" rx="14" ry="3.2" fill="#2a4a7a"/><path d="M92 20 L118 22 L92 23Z" fill="#E8A320"/></svg>';
+  var BOMB='<svg viewBox="0 0 16 44"><path d="M8 44 C16 34 15 12 8 8 C1 12 0 34 8 44Z" fill="#9aa8bd"/><path d="M1 12 L8 8 L15 12 L15 4 L8 0 L1 4Z" fill="#E8A320"/><rect x="6" y="14" width="4" height="10" fill="#cfd8e6" opacity=".5"/></svg>';
+  var T="SKYBOUND'S ELITE",h='';
+  for(var j=0;j<T.length;j++){h+='<span style="animation-delay:'+(2.05+j*0.045).toFixed(3)+'s">'+(T[j]===' '?'&nbsp;':T[j])+'</span>';}
+  document.body.insertAdjacentHTML('beforeend',
+    '<div id="splash"><button class="skip" id="skip">Skip &rsaquo;</button>'+
+    '<div class="scene"><div class="stars"></div><div class="glow"></div><div class="city"></div>'+
+    '<div class="jet">'+JET+'</div><div class="bomb">'+BOMB+'</div>'+
+    '<div class="blast"><div class="fire"></div><div class="ring"></div><div class="ring r2"></div></div></div>'+
+    '<div class="flash"></div>'+
+    '<div class="cap"><div class="ttl">'+h+'</div><div class="sub">MADE BY NS</div><div class="tag">AIR FORCE X &amp; Y GROUP MOCK TESTS</div></div></div>');
+  function close(){var s=document.getElementById('splash');if(s)s.remove();}
+  document.getElementById('skip').onclick=close;
+  setTimeout(close,4900);
+})();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, signInAnonymously, signInWithEmailAndPassword,
+  signOut, EmailAuthProvider, linkWithCredential, createUserWithEmailAndPassword,
+  setPersistence, browserSessionPersistence, sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, addDoc, collection, query,
+  where, orderBy, limit, runTransaction, writeBatch, serverTimestamp, onSnapshot, Timestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* ============ CONFIG & HELPERS ============ */
+const firebaseConfig = {
+  apiKey: "AIzaSyDHTu1tp8MKuSkVoVJnRpOx3D7849a0vJo",
+  authDomain: "emotional-testing.firebaseapp.com",
+  projectId: "emotional-testing",
+  storageBucket: "emotional-testing.firebasestorage.app",
+  messagingSenderId: "293365551598",
+  appId: "1:293365551598:web:81925eabdde01b04007eff",
+  databaseURL: "https://emotional-testing-default-rtdb.firebaseio.com",
+};
+// Ye email firestore rules mein bhi same honi chahiye
+const ADMIN_EMAIL = "admin@skyboundselite.app";
+const APP_NAME = "SKYBOUND'S ELITE";
+const FOOTER = `<footer class="credit">MADE BY <b class="ns">NS</b> · <a href="https://t.me/primex_4" target="_blank" rel="noopener">t.me/primex_4</a></footer>`;
+const NEW_MS = 48 * 3600 * 1000;
+const { animateNums, confetti } = window.SE;
+if (localStorage.getItem("se_dark") === "1") document.body.classList.add("dark");
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+import { getDatabase, ref as dbRef, set as dbSet, update as dbUpdate, remove as dbRemove, onValue as dbOnValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+const rtdb = getDatabase(fbApp);
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function fmtDate(ms) {
+  return new Date(ms).toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit",
+  });
+}
+function fmtSec(sec) {
+  const m = Math.floor(sec / 60), s = sec % 60;
+  return `${m}m ${String(s).padStart(2, "0")}s`;
+}
+// Same marks = same rank, agla rank skip: 1,1,3
+function assignRanks(list, key = "marks") {
+  let prev = null, prevRank = 0;
+  return list.map((item, i) => {
+    const rank = item[key] === prev ? prevRank : i + 1;
+    prev = item[key];
+    prevRank = rank;
+    return { ...item, rank };
+  });
+}
+function friendlyError(err) {
+  const map = {
+    "auth/email-already-in-use": "Ye email pehle se registered hai, login karo",
+    "auth/invalid-email": "Email sahi nahi hai",
+    "auth/invalid-credential": "Email ya password galat hai",
+    "auth/wrong-password": "Email ya password galat hai",
+    "auth/user-not-found": "Email ya password galat hai",
+    "auth/credential-already-in-use": "Is email se pehle hi account ban chuka hai",
+    "auth/weak-password": "Password kam se kam 6 characters ka ho",
+    "auth/operation-not-allowed": "Firebase mein Email/Password ya Anonymous login ON karo",
+    "permission-denied": "Permission denied. Rules publish hain ya test window check karo",
+    "not-found": "Setup missing: Firestore mein counters/students doc banao (field count = 0)",
+    "failed-precondition": "Firestore index chahiye: console ke error mein diya link khol kar index banao",
+    MOBILE_TAKEN: "Ye mobile number pehle se registered hai",
+  };
+  return map[err?.code] || map[err?.message] || err?.message || "Kuch gadbad ho gayi";
+}
+function newId(title) {
+  const slug = String(title).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return `${slug}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 5)}`;
+}
+
+// Txt format: TITLE, DURATION, NEGATIVE, MARKS, GROUP(optional X/Y), phir Q1: / A) B) C) D) / ANS / EXP
+function parseTestTxt(text) {
+  const meta = { title: "", duration: 60, negative: 0, marks: 1, group: "" };
+  const questions = [];
+  let cur = null;
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line) continue;
+    let m;
+    if ((m = line.match(/^TITLE:\s*(.+)$/i))) meta.title = m[1].trim();
+    else if ((m = line.match(/^DURATION:\s*(\d+)$/i))) meta.duration = +m[1];
+    else if ((m = line.match(/^NEGATIVE:\s*([\d.]+)$/i))) meta.negative = +m[1];
+    else if ((m = line.match(/^MARKS:\s*([\d.]+)$/i))) meta.marks = +m[1];
+    else if ((m = line.match(/^GROUP:\s*(X|Y)$/i))) meta.group = m[1].toUpperCase();
+    else if ((m = line.match(/^Q\d*[:.]\s*(.+)$/i))) {
+      cur = { q: m[1].trim(), opts: {}, ans: "", exp: "" };
+      questions.push(cur);
+    }
+    else if ((m = line.match(/^([A-D])\)\s*(.+)$/))) {
+      if (!cur) throw new Error(`Option bina question ke: ${line}`);
+      cur.opts[m[1]] = m[2].trim();
+    }
+    else if ((m = line.match(/^ANS:\s*([A-D])$/i))) {
+      if (!cur) throw new Error(`ANS bina question ke: ${line}`);
+      cur.ans = m[1].toUpperCase();
+    }
+    else if ((m = line.match(/^TOPIC:\s*(.+)$/i))) { if (cur) cur.topic = m[1].trim(); }
+    else if ((m = line.match(/^EXP:\s*(.+)$/i))) { if (cur) cur.exp = m[1].trim(); }
+    else throw new Error(`Samajh nahi aaya: ${line}`);
+  }
+  if (!meta.title) throw new Error("TITLE missing hai");
+  if (!questions.length) throw new Error("Koi question nahi mila");
+  if (!meta.group) {
+    meta.group = /\bX\s*Group\b/i.test(meta.title) ? "X" : /\bY\s*Group\b/i.test(meta.title) ? "Y" : "Other";
+  }
+  questions.forEach((q, i) => {
+    if (Object.keys(q.opts).length !== 4) throw new Error(`Q${i + 1} mein 4 options nahi hain`);
+    if (!q.ans) throw new Error(`Q${i + 1} ka ANS missing hai`);
+    if (!q.opts[q.ans]) throw new Error(`Q${i + 1} ka ANS option list mein nahi hai`);
+  });
+  return { meta, questions };
+}
+
+// Bar chart (SVG, bina library ke)
+function barChart(items) {
+  if (!items.length) return `<p class="muted">Abhi koi graded result nahi.</p>`;
+  const W = 600, H = 170, pad = 24;
+  const max = Math.max(...items.map((i) => i.max), 1);
+  const bw = (W - pad * 2) / items.length;
+  const bars = items.map((it, i) => {
+    const h = Math.max(0, (it.marks / max) * (H - pad * 2));
+    const x = pad + i * bw + bw * 0.15, y = H - pad - h;
+    return `<rect class="bar" style="animation-delay:${i * 90}ms" x="${x}" y="${y}" width="${bw * 0.7}" height="${h}" fill="#16325C" rx="3"/>
+      <text x="${x + bw * 0.35}" y="${y - 4}" font-size="11" text-anchor="middle" fill="#0B1F3A">${it.marks}</text>
+      <text x="${x + bw * 0.35}" y="${H - 6}" font-size="11" text-anchor="middle" fill="#5b6b82">${i + 1}</text>`;
+  }).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%">${bars}</svg>
+    <p class="muted">Test number (baayein se daayein) aur marks</p>`;
+}
+
+/* ============ ROUTER: "/" = student, "/#admin" = admin ============ */
+// Setup ya code error ho to loading ki jagah ye message dikhega
+function showBootError(err) {
+  console.error(err);
+  const raw = err?.message || String(err);
+  document.getElementById("app").innerHTML = `<div class="auth">
+    <h2>Kuch setup baaki hai</h2>
+    <p class="err">${esc(friendlyError(err))}</p>
+    <p class="muted" style="word-break:break-word">Raw: ${esc(raw)}</p>
+    <p class="muted">Check karo: Authentication > Sign-in method mein Email/Password aur Anonymous ON ho, Firestore bana ho, rules publish hon.</p>
+  </div>`;
+}
+window.addEventListener("error", (e) => showBootError(e.error || e.message));
+window.addEventListener("unhandledrejection", (e) => showBootError(e.reason));
+
+if (location.hash === "#admin") {
+  // Admin ka login sirf is tab mein rahe, dusre tabs (student page) se share na ho
+  setPersistence(auth, browserSessionPersistence).catch(() => {});
+  startAdmin();
+} else {
+  startStudent();
+}
+
+/* =====================================================================
+   STUDENT APP
+   ===================================================================== */
+function startStudent() {
+  const app = document.getElementById("app");
+  let user = null, profile = null, exam = null, cleanup = null;
+  let groupFilter = "ALL";
+
+  function setView(html) {
+    if (cleanup) { cleanup(); cleanup = null; }
+    app.innerHTML = html;
+  }
+  function msg(text, cls = "err") {
+    const el = document.getElementById("msg");
+    if (el) { el.className = cls; el.textContent = text; }
+  }
+
+  let signingUp = false;
+  onAuthStateChanged(auth, async (u) => {
+    if (signingUp) return; // signup ke beech listener screen na badle
+    try {
+      user = u;
+      if (!u) { await signInAnonymously(auth); return; }
+      profile = await loadProfile(u.uid);
+      if (!profile && !u.isAnonymous) { showCompleteProfile(u); return; }
+      if (profile && profile.blocked) {
+        alert("Aapka account block kiya gaya hai. Admin se contact karo.");
+        await signOut(auth);
+        return;
+      }
+      profile ? showDashboard() : showAuth("login");
+    } catch (err) {
+      showBootError(err);
+    }
+  });
+
+  async function loadProfile(uid) {
+    const s = await getDoc(doc(db, "users", uid));
+    return s.exists() ? s.data() : null;
+  }
+
+  /* ---------- PROFILE ADHOORA (login hai, par users doc nahi) ---------- */
+  function showCompleteProfile(u) {
+    setView(`<div class="auth">
+      <h1 class="brand">${APP_NAME}</h1>
+      <p class="muted">Aapka login ho gaya hai, par profile adhoori thi. Naam aur mobile daalo, profile complete ho jayegi.</p>
+      <form>
+        <label>Naam</label><input name="fullname" required>
+        <label>Mobile (10 digit)</label><input name="mobile" type="tel" inputmode="numeric" maxlength="10" required>
+        <button type="submit" style="width:100%">Profile complete karo</button>
+      </form>
+      <button id="cpout" class="ghost" style="width:100%;margin-top:8px">Logout</button>
+      <p id="msg" class="err"></p>
+    </div>${FOOTER}`);
+    document.getElementById("cpout").onclick = () => signOut(auth);
+    app.querySelector("form").onsubmit = async (e) => {
+      e.preventDefault();
+      const f = e.target;
+      const name = f.fullname.value.trim();
+      const mobile = f.mobile.value.trim();
+      if (!/^[6-9]\d{9}$/.test(mobile)) return msg("Sahi 10 digit mobile number daalo");
+      try {
+        await runTransaction(db, async (tx) => {
+          const mRef = doc(db, "mobiles", mobile);
+          const cRef = doc(db, "counters", "students");
+          const uRef = doc(db, "users", u.uid);
+          const m = await tx.get(mRef);
+          if (m.exists() && m.data().uid !== u.uid) throw new Error("MOBILE_TAKEN");
+          const c = await tx.get(cRef);
+          const next = (c.data()?.count ?? 0) + 1;
+          if (c.exists()) tx.update(cRef, { count: next });
+          else tx.set(cRef, { count: next });
+          if (!m.exists()) tx.set(mRef, { uid: u.uid });
+          tx.set(uRef, {
+            name, mobile, email: u.email, blocked: false,
+            studentId: "SKE" + String(next).padStart(5, "0"),
+            createdAt: serverTimestamp(),
+          });
+        });
+        profile = await loadProfile(u.uid);
+        showDashboard();
+      } catch (err) { msg(friendlyError(err)); }
+    };
+  }
+
+  /* ---------- LOGIN / SIGNUP ---------- */
+  function showAuth(mode) {
+    const isLogin = mode === "login";
+    setView(`
+      <div class="auth">
+        <h1 class="brand">${APP_NAME}</h1>
+        <p class="muted" style="text-align:center">Air Force X & Y Group Mock Tests</p>
+        <div class="tabs">
+          <button data-m="login" class="${isLogin ? "on" : ""}">Login</button>
+          <button data-m="signup" class="${isLogin ? "" : "on"}">Signup</button>
+        </div>
+        ${isLogin ? loginHtml() : signupHtml()}
+        <p id="msg" class="err"></p>
+      </div>
+      ${FOOTER}`);
+    app.querySelectorAll(".tabs button").forEach((b) => (b.onclick = () => showAuth(b.dataset.m)));
+    app.querySelector("form").onsubmit = isLogin ? onLogin : onSignup;
+    const fp = document.getElementById("fp");
+    if (fp) fp.onclick = (e) => { e.preventDefault(); onForgot(); };
+  }
+
+  function loginHtml() {
+    return `<form>
+      <label>Email</label><input name="email" type="email" required>
+      <label>Password</label><input name="password" type="password" required>
+      <button type="submit" style="width:100%">Login</button>
+    </form>
+    <p class="muted" style="text-align:center"><a href="#" id="fp">Password bhool gaye?</a></p>`;
+  }
+
+  function signupHtml() {
+    return `<form>
+      <label>Naam</label><input name="fullname" required>
+      <label>Mobile (10 digit)</label><input name="mobile" type="tel" inputmode="numeric" maxlength="10" required>
+      <label>Email</label><input name="email" type="email" required>
+      <label>Password (min 6)</label><input name="password" type="password" minlength="6" required>
+      <label><input type="checkbox" name="consent" required> Mai privacy policy aur test rules se agree karta/karti hun</label>
+      <button type="submit" style="width:100%">Signup & Start</button>
+    </form>`;
+  }
+
+  async function onForgot() {
+    const email = (app.querySelector('input[name=email]').value || "").trim();
+    if (!email) return msg("Pehle email daalo, phir Password bhool gaye dabao");
+    try {
+      await sendPasswordResetEmail(auth, email);
+      msg("Reset link email par bhej diya (spam folder bhi check karo)", "ok");
+    } catch (err) { msg(friendlyError(err)); }
+  }
+
+  async function onLogin(e) {
+    e.preventDefault();
+    const f = e.target;
+    msg("Login ho raha hai...", "ok");
+    try {
+      await signInWithEmailAndPassword(auth, f.email.value.trim(), f.password.value);
+    } catch (err) { msg(friendlyError(err)); }
+  }
+
+  async function onSignup(e) {
+    e.preventDefault();
+    const f = e.target;
+    const name = f.fullname.value.trim();
+    const mobile = f.mobile.value.trim();
+    const email = f.email.value.trim();
+    const password = f.password.value;
+
+    if (!/^[6-9]\d{9}$/.test(mobile)) return msg("Sahi 10 digit mobile number daalo");
+    if (password.length < 6) return msg("Password kam se kam 6 characters ka ho");
+    msg("Account ban raha hai...", "ok");
+
+    try {
+      const mSnap = await getDoc(doc(db, "mobiles", mobile));
+      if (mSnap.exists()) throw new Error("MOBILE_TAKEN");
+
+      signingUp = true;
+      await createUserWithEmailAndPassword(auth, email, password);
+      const uid = auth.currentUser.uid;
+
+      await runTransaction(db, async (tx) => {
+        const mRef = doc(db, "mobiles", mobile);
+        const cRef = doc(db, "counters", "students");
+        const uRef = doc(db, "users", uid);
+        const m = await tx.get(mRef);
+        if (m.exists()) throw new Error("MOBILE_TAKEN");
+        const c = await tx.get(cRef);
+        const next = (c.data()?.count ?? 0) + 1;
+        if (c.exists()) tx.update(cRef, { count: next });
+        else tx.set(cRef, { count: next });
+        tx.set(mRef, { uid });
+        tx.set(uRef, {
+          name, mobile, email, blocked: false,
+          studentId: "SKE" + String(next).padStart(5, "0"),
+          createdAt: serverTimestamp(),
+        });
+      });
+
+      signingUp = false;
+      profile = await loadProfile(uid);
+      showDashboard();
+    } catch (err) {
+      signingUp = false;
+      msg(friendlyError(err));
+    }
+  }
+
+  /* ---------- DASHBOARD ---------- */
+  function showDashboard() {
+    setView(`
+      <header class="topbar">
+        <div><b>${APP_NAME}</b><small>${esc(profile.name)} · ${esc(profile.studentId)}</small></div>
+        <button id="logout" class="ghost small">Logout</button>
+      </header>
+      <main class="wrap">
+        <section id="notices"></section>
+        <div class="stat-grid" id="stats">
+          <div><b>-</b><small>Overall Rank</small></div>
+          <div><b>-</b><small>Personal Best</small></div>
+          <div><b>-</b><small>Attempts</small></div>
+        </div>
+        <div class="tabs" id="gtabs">
+          <button data-g="ALL" class="on">All</button><button data-g="X">X Group</button><button data-g="Y">Y Group</button>
+        </div>
+        <h2>Upcoming exams</h2>
+        <div id="upcoming"></div>
+        <h2>Mock Tests</h2>
+        <div id="tests"><p class="muted">Loading...</p></div>
+        <h2>Performance</h2>
+        <div id="chart" class="card"></div>
+        <h2>Previous Results</h2>
+        <div id="prev"></div>
+        <div id="gami"></div>
+        <div class="acts" style="margin-top:12px">
+          <button id="dark" class="ghost small">Dark / Light</button>
+          <a href="/gd/"><button class="small">GD Room</button></a>
+          <a href="https://t.me/primex_4" target="_blank" rel="noopener"><button class="ghost small">Telegram join karo</button></a>
+        </div>
+        <h2>Doubt box</h2>
+        <textarea id="dbt" rows="3" placeholder="Apna doubt likho (admin reply karega)"></textarea>
+        <button id="dsend" class="small" style="width:100%">Doubt bhejo</button>
+        <p id="dmsg" class="muted"></p>
+        <div id="dlist"></div>
+      </main>
+      ${FOOTER}`);
+    document.getElementById("logout").onclick = () => signOut(auth);
+    document.getElementById("dark").onclick = () => {
+      const on = document.body.classList.toggle("dark");
+      localStorage.setItem("se_dark", on ? "1" : "0");
+    };
+    document.getElementById("dsend").onclick = sendDoubt;
+    const unsubDoubts = renderDoubts();
+    cleanup = () => unsubDoubts();
+    document.querySelectorAll("#gtabs button").forEach((b) => (b.onclick = () => {
+      groupFilter = b.dataset.g;
+      document.querySelectorAll("#gtabs button").forEach((x) => x.classList.toggle("on", x === b));
+      loadDashboard();
+    }));
+    loadNotices();
+    loadDashboard();
+  }
+
+  async function loadNotices() {
+    const snap = await getDocs(query(collection(db, "notices"), orderBy("createdAt", "desc"), limit(5)));
+    const el = document.getElementById("notices");
+    if (!el || snap.empty) return;
+    el.innerHTML = `<h2>Notices</h2>` + snap.docs.map((d) => {
+      const n = d.data();
+      return `<div class="card"><b>${esc(n.title)}</b><p class="muted">${esc(n.body)}</p></div>`;
+    }).join("");
+  }
+
+  async function loadDashboard() {
+    const now = Date.now();
+    const snap = await getDocs(query(collection(db, "tests"), where("active", "==", true)));
+    const rows = await Promise.all(snap.docs.map(async (d) => {
+      const r = await getDoc(doc(db, "tests", d.id, "results", user.uid));
+      return { id: d.id, t: d.data(), res: r.exists() ? r.data() : null };
+    }));
+    rows.sort((a, b) => a.t.startAt.toMillis() - b.t.startAt.toMillis());
+
+    // Tests list (group filter ke saath)
+    const shown = rows.filter((r) => groupFilter === "ALL" || r.t.meta.group === groupFilter);
+    const list = document.getElementById("tests");
+    list.innerHTML = shown.length ? shown.map(({ id, t, res }) => {
+      const s = t.startAt.toMillis(), e = t.endAt.toMillis();
+      const isNew = t.createdAt && now - t.createdAt.toMillis() < NEW_MS;
+      let status, action;
+      if (res) { status = "Attempted"; action = `<button data-act="result" data-id="${id}" class="small">Result</button>`; }
+      else if (now < s) { status = "Upcoming"; action = `<span class="muted">${fmtDate(s)}</span>`; }
+      else if (now <= e) { status = "Live"; action = `<button data-act="start" data-id="${id}">Start Test</button>`; }
+      else { status = "Missed"; action = `<span class="muted">Window band</span>`; }
+      return `<div class="card row">
+        <div><b>${esc(t.meta.title)}</b>${isNew ? `<span class="badge">NEW</span>` : ""}
+          <small>${t.totalQuestions} Q · ${t.meta.duration} min · ${status}${status === "Live" ? '<i class="dot"></i>' : ""}</small></div>
+        <div class="acts">${action}<button data-act="lb" data-id="${id}" class="ghost small">Rank</button></div>
+      </div>`;
+    }).join("") : `<p class="muted">Is group ka abhi koi active test nahi hai.</p>`;
+
+    list.onclick = (ev) => {
+      const b = ev.target.closest("button");
+      if (!b) return;
+      const { act, id } = b.dataset;
+      if (act === "start") startTest(id);
+      if (act === "result") showResult(id);
+      if (act === "lb") showLeaderboard(id);
+    };
+
+    // Stats: personal best, attempts, overall rank
+    const upcomingEl = document.getElementById("upcoming");
+    if (upcomingEl) {
+      const up = rows.filter((r) => r.t.startAt.toMillis() > now).sort((a, b) => a.t.startAt.toMillis() - b.t.startAt.toMillis());
+      upcomingEl.innerHTML = up.length ? up.map((r) => {
+        const ms = r.t.startAt.toMillis() - now;
+        const h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000);
+        return `<div class="card row"><div><b>${esc(r.t.meta.title)}</b>
+          <small>${fmtDate(r.t.startAt.toMillis())} · ${r.t.meta.group ? "Group " + esc(r.t.meta.group) : "Group -"} · ${r.t.totalQuestions} Q</small></div>
+          <span class="badge">${h}h ${m}m baad</span></div>`;
+      }).join("") : `<p class="muted">Koi upcoming exam nahi hai.</p>`;
+    }
+    const scored = rows.filter((r) => r.res && r.res.marks !== undefined);
+    const best = scored.length ? Math.max(...scored.map((r) => r.res.marks)) : "-";
+    const attempts = rows.filter((r) => r.res).length;
+    let rank = "-";
+    try {
+      const ov = await getDocs(query(collection(db, "overall"), orderBy("total", "desc"), limit(500)));
+      const ranked = assignRanks(ov.docs.map((d) => ({ id: d.id, total: d.data().total })), "total");
+      const me = ranked.find((x) => x.id === user.uid);
+      if (me) rank = "#" + me.rank;
+    } catch (_) { /* index/permission ka error ho to rank "-" hi rahega */ }
+    document.getElementById("stats").innerHTML = `
+      <div><b>${rank}</b><small>Overall Rank</small></div>
+      <div><b>${best}</b><small>Personal Best</small></div>
+      <div><b>${attempts}</b><small>Attempts</small></div>`;
+    animateNums(document.getElementById("stats"));
+
+    // Performance chart + previous results
+    const chartItems = scored.map((r) => ({
+      marks: r.res.marks, max: r.t.totalQuestions * r.t.meta.marks,
+    }));
+    document.getElementById("chart").innerHTML = barChart(chartItems);
+    renderGami(rows, scored);
+    const prev = document.getElementById("prev");
+    const prevRows = rows.filter((r) => r.res);
+    prev.innerHTML = prevRows.length ? prevRows.map((r) => `
+      <div class="card row"><div><b>${esc(r.t.meta.title)}</b>
+        <small>${r.res.marks !== undefined ? `Marks ${r.res.marks}` : "Result pending"}</small></div>
+        <button data-act="result" data-id="${r.id}" class="small ghost">Dekho</button></div>`).join("")
+      : `<p class="muted">Abhi koi test nahi diya.</p>`;
+    prev.onclick = (ev) => {
+      const b = ev.target.closest("button");
+      if (b) showResult(b.dataset.id);
+    };
+  }
+
+  /* ---------- GAMIFICATION, DOUBTS ---------- */
+  function dayStart(ms) { return new Date(new Date(ms).setHours(0, 0, 0, 0)).getTime(); }
+  function renderGami(rows, scored) {
+    const attempts = rows.filter((r) => r.res).length;
+    const xp = attempts * 10 + scored.reduce((s, r) => s + Math.max(0, r.res.marks), 0);
+    const level = Math.floor(xp / 100) + 1;
+    const days = [...new Set(rows.filter((r) => r.res && r.res.submittedAt).map((r) => dayStart(r.res.submittedAt.toMillis())))].sort((a, b) => b - a);
+    let streak = 0;
+    const today = dayStart(Date.now());
+    if (days.length && (days[0] === today || days[0] === today - 86400000)) {
+      streak = 1;
+      for (let i = 1; i < days.length; i++) {
+        if (Math.round((days[i - 1] - days[i]) / 86400000) === 1) streak++; else break;
+      }
+    }
+    const badges = [];
+    if (attempts >= 1) badges.push("First Test");
+    if (rows.some((r) => r.res && r.res.accuracy === 100)) badges.push("100% Accuracy");
+    if (attempts >= 5) badges.push("5 Tests");
+    if (streak >= 3) badges.push("3-din Streak");
+    document.getElementById("gami").innerHTML = `<h2>Progress</h2><div class="stat-grid">
+      <div><b>${streak} 🔥</b><small>Streak (din)</small></div>
+      <div><b>Lv ${level}</b><small>${xp} XP</small></div>
+      <div><b>${badges.length}</b><small>Badges</small></div></div>
+      <p>${badges.map((b) => `<span class="badge">${b}</span>`).join(" ") || `<span class="muted">Pehla test do, badge milega</span>`}</p>`;
+  }
+  function renderDoubts() {
+    const el = document.getElementById("dlist");
+    if (!el) return () => {};
+    return onSnapshot(
+      query(collection(db, "doubts"), where("uid", "==", user.uid)),
+      (snap) => {
+        const items = snap.docs.map((d) => d.data())
+          .sort((x, y) => (y.createdAt?.toMillis() ?? 0) - (x.createdAt?.toMillis() ?? 0));
+        el.innerHTML = items.length ? items.map((x) => `<div class="card"><small>Aapka doubt</small><p>${esc(x.text)}</p>
+          ${x.reply ? `<p class="ok"><b>Reply:</b> ${esc(x.reply)}</p>` : `<p class="muted">Reply pending</p>`}</div>`).join("")
+          : `<p class="muted">Abhi koi doubt nahi bheja.</p>`;
+      },
+      (err) => { el.innerHTML = `<p class="err">${esc(friendlyError(err))}</p>`; }
+    );
+  }
+  async function sendDoubt() {
+    const text = document.getElementById("dbt").value.trim();
+    const m = document.getElementById("dmsg");
+    if (text.length < 5) { m.className = "err"; m.textContent = "Doubt thoda detail mein likho"; return; }
+    try {
+      await addDoc(collection(db, "doubts"), {
+        uid: user.uid, name: profile.name, studentId: profile.studentId,
+        text: text.slice(0, 1000), createdAt: serverTimestamp(),
+      });
+      document.getElementById("dbt").value = "";
+      m.className = "ok"; m.textContent = "Doubt bhej diya";
+    } catch (err) { m.className = "err"; m.textContent = friendlyError(err); }
+  }
+  function showCertificate(t, r, rank) {
+    setView(`<header class="topbar"><button id="back" class="ghost small">← Back</button><b>Certificate</b>
+      <button id="print" class="small">Print / PDF</button></header>
+      <main class="wrap"><div class="card" style="text-align:center;border:3px double #E8A320;padding:30px">
+        <h1>SKYBOUND'S ELITE</h1><p class="muted">Certificate of Achievement</p>
+        <p>Ye certificate diya jaata hai</p><h2>${esc(profile.name)}</h2>
+        <p>${esc(t.meta.title)} mein ${r.marks} marks ke saath (Rank #${rank})</p>
+        <p class="muted">Student ID: ${esc(profile.studentId)} · ${fmtDate(Date.now())}</p>
+        <p class="muted">MADE BY NS · t.me/primex_4</p></div></main>`);
+    document.getElementById("back").onclick = showDashboard;
+    document.getElementById("print").onclick = () => window.print();
+  }
+
+  /* ---------- EXAM ---------- */
+  async function startTest(id) {
+    if (!profile) return;
+    const t = (await getDoc(doc(db, "tests", id))).data();
+    const now = Date.now();
+    if (now < t.startAt.toMillis() || now > t.endAt.toMillis()) { alert("Test abhi open nahi hai"); return; }
+
+    const startRef = doc(db, "tests", id, "starts", user.uid);
+    let sSnap = await getDoc(startRef);
+    if (!sSnap.exists()) {
+      await setDoc(startRef, { startedAt: serverTimestamp() });
+      sSnap = await getDoc(startRef);
+    }
+    const ts = sSnap.data().startedAt;
+    const startedAt = ts ? ts.toMillis() : Date.now();
+    const deadline = Math.min(startedAt + t.meta.duration * 60000, t.endAt.toMillis());
+
+    const key = `se_exam_${id}_${user.uid}`;
+    const saved = JSON.parse(localStorage.getItem(key) || "{}");
+    exam = {
+      id, t, key, startedAt, deadline,
+      answers: saved.answers || {},
+      marked: saved.marked || {},
+      qi: 0, iv: null, submitting: false, pending: !!saved.pending,
+      tabSwitches: saved.tabSwitches || 0, copyAttempts: saved.copyAttempts || 0,
+    };
+    showInstructions(t);
+  }
+
+  function showInstructions(t) {
+    setView(`<header class="topbar"><b>${esc(t.meta.title)}</b></header>
+      <main class="wrap"><div class="card">
+        <h3>Test ke rules</h3>
+        <p class="muted">Duration: ${t.meta.duration} min · Questions: ${t.totalQuestions} · +${t.meta.marks} sahi / -${t.meta.negative} galat · Skip 0</p>
+        <p>1. Ek hi baar attempt hoga, submit ke baad answers change nahi honge.</p>
+        <p>2. Time khatam hone par test apne aap submit ho jayega.</p>
+        <p>3. Tab change ya screen switch count hoga, aur admin ko dikhega.</p>
+        <p>4. Copy, paste aur right-click band hain.</p>
+        <label><input type="checkbox" id="agree"> Mai rules samajhta/samajhti hun</label>
+        <button id="gostart" style="width:100%;margin-top:12px" disabled>Test Start Karo</button>
+      </div></main>${FOOTER}`);
+    const ag = document.getElementById("agree");
+    const go = document.getElementById("gostart");
+    ag.onchange = () => { go.disabled = !ag.checked; };
+    go.onclick = () => renderExam();
+  }
+
+  function persist() {
+    localStorage.setItem(exam.key, JSON.stringify({
+      answers: exam.answers, marked: exam.marked, pending: !!exam.pending,
+      tabSwitches: exam.tabSwitches || 0, copyAttempts: exam.copyAttempts || 0,
+    }));
+  }
+
+  function renderExam() {
+    setView(`
+      <header class="exam-top"><b>${esc(exam.t.meta.title)}</b><span id="tsw" class="muted">Tab switch: ${exam.tabSwitches || 0}</span><span id="clock" class="clock">--:--</span></header>
+      <div id="pal" class="palette"></div>
+      <main id="qbox" class="qbox"></main>
+      <footer class="exam-foot">
+        <button id="prev" class="ghost">Prev</button>
+        <button id="mark" class="ghost">Mark</button>
+        <button id="next">Save & Next</button>
+        <button id="sub" class="danger">Submit</button>
+      </footer>`);
+    const onVis = () => {
+      if (!exam || !document.hidden) return;
+      exam.tabSwitches = (exam.tabSwitches || 0) + 1;
+      persist();
+      const w = document.getElementById("tsw");
+      if (w) w.textContent = `Tab switch: ${exam.tabSwitches}`;
+    };
+    const blockEv = (e) => {
+      e.preventDefault();
+      if (!exam) return;
+      exam.copyAttempts = (exam.copyAttempts || 0) + 1;
+      persist();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    document.addEventListener("contextmenu", blockEv);
+    document.addEventListener("copy", blockEv);
+    document.addEventListener("paste", blockEv);
+    cleanup = () => {
+      clearInterval(exam?.iv);
+      document.removeEventListener("visibilitychange", onVis);
+      document.removeEventListener("contextmenu", blockEv);
+      document.removeEventListener("copy", blockEv);
+      document.removeEventListener("paste", blockEv);
+    };
+
+    document.getElementById("prev").onclick = () => go(exam.qi - 1);
+    document.getElementById("next").onclick = () => go(exam.qi + 1);
+    document.getElementById("mark").onclick = () => {
+      const no = exam.t.questions[exam.qi].no;
+      exam.marked[no] = !exam.marked[no];
+      persist();
+      drawExam();
+    };
+    document.getElementById("sub").onclick = () => {
+      if (confirm("Test submit karein? Iske baad answers change nahi honge.")) submitTest(false);
+    };
+    document.getElementById("pal").onclick = (e) => {
+      const b = e.target.closest("button");
+      if (b) go(+b.dataset.i);
+    };
+
+    drawExam();
+    exam.iv = setInterval(tick, 1000);
+    tick();
+    if (exam.pending) submitTest(true);
+  }
+
+  function go(i) {
+    const n = exam.t.questions.length;
+    exam.qi = Math.max(0, Math.min(n - 1, i));
+    drawExam();
+  }
+
+  function drawExam() {
+    const n = exam.t.questions.length;
+    const q = exam.t.questions[exam.qi];
+    const no = q.no;
+    exam.visited = exam.visited || {};
+    exam.visited[no] = true;
+
+    document.getElementById("pal").innerHTML = exam.t.questions.map((qq, i) => {
+      const cls = [
+        i === exam.qi ? "cur" : "",
+        exam.answers[qq.no] ? "ans" : "",
+        exam.marked[qq.no] ? "mk" : "",
+        exam.visited && exam.visited[qq.no] && !exam.answers[qq.no] ? "vis" : "",
+      ].join(" ");
+      return `<button class="qd ${cls}" data-i="${i}">${qq.no}</button>`;
+    }).join("");
+
+    const qb = document.getElementById("qbox");
+    qb.classList.remove("slide");
+    if (exam.lastQi !== exam.qi) { void qb.offsetWidth; qb.classList.add("slide"); exam.lastQi = exam.qi; }
+    qb.innerHTML = `
+      <div class="qhead">Q${no} / ${n}</div>
+      <p class="qtext">${esc(q.q)}</p>
+      ${Object.entries(q.opts).map(([L, txt]) => `
+        <label class="opt ${exam.answers[no] === L ? "sel" : ""}">
+          <input type="radio" name="o" value="${L}" ${exam.answers[no] === L ? "checked" : ""}>
+          <span class="L">${L}</span><span>${esc(txt)}</span>
+        </label>`).join("")}
+      <button id="clr" class="ghost" style="margin-top:8px">Clear response</button>`;
+
+    document.querySelectorAll('#qbox input[name="o"]').forEach((inp) => {
+      inp.onchange = () => { exam.answers[no] = inp.value; persist(); drawExam(); };
+    });
+    document.getElementById("clr").onclick = () => { delete exam.answers[no]; persist(); drawExam(); };
+  }
+
+  function tick() {
+    const left = exam.deadline - Date.now();
+    if (left <= 0) { clearInterval(exam.iv); submitTest(true); return; }
+    const el = document.getElementById("clock");
+    if (!el) return;
+    const s = Math.floor(left / 1000);
+    el.textContent = `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+    el.classList.toggle("low", s <= 300);
+  }
+
+  async function submitTest(auto) {
+    if (!exam || exam.submitting) return;
+    exam.submitting = true;
+    clearInterval(exam.iv);
+
+    const payload = {
+      uid: user.uid,
+      name: profile.name,
+      studentId: profile.studentId,
+      tabSwitches: exam.tabSwitches || 0,
+      copyAttempts: exam.copyAttempts || 0,
+      answers: { ...exam.answers },
+      timeTaken: Math.min(Math.round((Date.now() - exam.startedAt) / 1000), exam.t.meta.duration * 60),
+      submittedAt: serverTimestamp(),
+    };
+    exam.pending = true;
+    persist();
+
+    const ref = doc(db, "tests", exam.id, "results", user.uid);
+    try {
+      await setDoc(ref, payload);
+    } catch (err) {
+      const check = await getDoc(ref).catch(() => null);
+      if (!(check && check.exists())) {
+        exam.submitting = false;
+        if (err?.code === "permission-denied") {
+          // Exact wajah dikhao: test end time, abhi ka time, start record
+          const tSnap = await getDoc(doc(db, "tests", exam.id)).catch(() => null);
+          const stSnap = await getDoc(doc(db, "tests", exam.id, "starts", user.uid)).catch(() => null);
+          const endMs = tSnap && tSnap.exists() ? tSnap.data().endAt.toMillis() : null;
+          const info = `Test end: ${endMs ? fmtDate(endMs) : "pata nahi"} · Abhi: ${fmtDate(Date.now())} · Start record: ${stSnap && stSnap.exists() ? "haan" : "nahi"}`;
+          setView(`<div class="auth"><h2>Submit reject hua</h2>
+            <p class="err">Server ne submit rokh diya (permission-denied).</p>
+            <p class="muted">${esc(info)}</p>
+            <p class="muted">Raw: ${esc(err?.message || "")}</p>
+            <p class="muted">Agar "Test end" abhi se pehle ka hai to window khatam hai. Warna ye screen admin ko bhejo.</p>
+          </div>${FOOTER}`);
+          return;
+        }
+        setView(`<div class="auth"><h2>Submit nahi hua</h2>
+          <p class="muted">Internet check karo. Ye page 15 second mein dobara try karega, answers safe hain.</p></div>`);
+        setTimeout(() => { if (exam) submitTest(true); }, 15000);
+        return;
+      }
+    }
+    localStorage.removeItem(exam.key);
+    exam = null;
+    alert(auto ? "Time khatam, test submit ho gaya" : "Test submit ho gaya");
+    showDashboard();
+  }
+
+  /* ---------- RESULT ---------- */
+  async function showResult(id) {
+    const uid = user.uid;
+    const [tSnap, rSnap, eSnap] = await Promise.all([
+      getDoc(doc(db, "tests", id)),
+      getDoc(doc(db, "tests", id, "results", uid)),
+      getDoc(doc(db, "tests", id, "answers", "explain")).catch(() => null), // endAt ke baad hi readable
+    ]);
+    const t = tSnap.data(), r = rSnap.data();
+    const back = `<header class="topbar"><button id="back" class="ghost small">← Back</button><b>${esc(t.meta.title)}</b>
+      <button id="print" class="ghost small">Print / PDF</button></header>`;
+    const bindBack = () => {
+      document.getElementById("back").onclick = showDashboard;
+      document.getElementById("print").onclick = () => window.print();
+    };
+
+    if (r.marks === undefined) {
+      setView(`${back}<main class="wrap"><div class="card"><h3>Result pending</h3>
+        <p class="muted">Admin grading ke baad result aayega. Aapne ${Object.keys(r.answers || {}).length} questions attempt kiye.</p>
+        </div></main>${FOOTER}`);
+      bindBack();
+      return;
+    }
+
+    const higher = await getDocs(query(collection(db, "tests", id, "results"), where("marks", ">", r.marks)));
+    const rank = higher.size + 1;
+    const explainOk = !!(eSnap && eSnap.exists());
+    const ans = explainOk ? eSnap.data().answers : null;
+    const exp = explainOk ? eSnap.data().explanations : null;
+    const totalMarks = t.totalQuestions * t.meta.marks;
+
+    const summary = `<div class="stat-grid">
+      <div><b>${r.marks}</b><small>Marks / ${totalMarks}</small></div>
+      <div><b>#${rank}</b><small>Rank</small></div>
+      <div><b>${r.accuracy}%</b><small>Accuracy</small></div>
+      <div><b>${r.correct}</b><small>Correct</small></div>
+      <div><b>${r.wrong}</b><small>Wrong</small></div>
+      <div><b>${r.unattempted}</b><small>Unattempted</small></div>
+    </div>
+    <p class="muted" style="text-align:center">Time: ${fmtSec(r.timeTaken)}</p>
+    ${explainOk ? "" : `<p class="muted">Correct answers aur explanation test window band hone ke baad dikhenge.</p>`}`;
+
+    const qHtml = t.questions.map((q) => {
+      const mine = r.answers?.[q.no];
+      const correct = explainOk ? ans[q.no] : null;
+      const status = !mine ? "Skipped" : explainOk ? (mine === correct ? "Correct" : "Wrong") : "Attempted";
+      return `<div class="card">
+        <small>Q${q.no} · ${status}</small>
+        <p class="qtext">${esc(q.q)}</p>
+        ${Object.entries(q.opts).map(([L, txt]) => `
+          <div class="opt static ${explainOk && correct === L ? "good" : ""} ${explainOk && mine === L && correct !== L ? "bad" : ""}">
+            <span class="L">${L}</span><span>${esc(txt)}</span>
+          </div>`).join("")}
+        ${explainOk ? `<p class="sol"><b>Explanation:</b> ${esc(exp[q.no] || "")}</p>` : ""}
+      </div>`;
+    }).join("");
+
+    const topicMap = {};
+    if (explainOk) {
+      t.questions.forEach((q) => {
+        const k = q.topic || "General";
+        topicMap[k] = topicMap[k] || { c: 0, n: 0 };
+        topicMap[k].n++;
+        if (r.answers?.[q.no] && r.answers[q.no] === ans[q.no]) topicMap[k].c++;
+      });
+    }
+    const topicHtml = Object.keys(topicMap).length
+      ? `<h3>Topic-wise</h3>` + Object.entries(topicMap).map(([k, v]) =>
+          `<div class="row"><span>${esc(k)}</span><b>${v.c}/${v.n}</b></div>`).join("")
+      : "";
+    const wa = "https://wa.me/?text=" + encodeURIComponent(`SKYBOUND'S ELITE: ${t.meta.title} mein ${r.marks}/${totalMarks} marks, Rank #${rank}`);
+    const extra = `<div class="acts" style="margin:10px 0"><a href="${wa}" target="_blank" rel="noopener"><button class="small ghost">WhatsApp share</button></a><button id="cert" class="small">Certificate</button></div>`;
+
+    setView(`${back}<main class="wrap"><h2>Your Result</h2>${summary}${extra}${topicHtml}<h3>Questions</h3>${qHtml}</main>${FOOTER}`);
+    document.getElementById("cert").onclick = () => showCertificate(t, r, rank);
+    bindBack();
+    animateNums(document.querySelector(".stat-grid"));
+    if (rank <= 3) confetti();
+  }
+
+  /* ---------- LEADERBOARD ---------- */
+  function showLeaderboard(testId) {
+    let unsub = null;
+    setView(`
+      <header class="topbar"><button id="back" class="ghost small">← Back</button><b>Leaderboard</b></header>
+      <main class="wrap">
+        <div class="tabs"><button id="tTest" class="on">Is Test</button><button id="tAll">Overall</button></div>
+        <div id="board" class="muted">Loading...</div>
+      </main>${FOOTER}`);
+    cleanup = () => unsub && unsub();
+    document.getElementById("back").onclick = showDashboard;
+
+    const load = (mode) => {
+      if (unsub) unsub();
+      document.getElementById("tTest").classList.toggle("on", mode === "test");
+      document.getElementById("tAll").classList.toggle("on", mode === "all");
+      const board = document.getElementById("board");
+      const q = mode === "test"
+        ? query(collection(db, "tests", testId, "results"), orderBy("marks", "desc"), limit(100))
+        : query(collection(db, "overall"), orderBy("total", "desc"), limit(100));
+      const key = mode === "test" ? "marks" : "total";
+      unsub = onSnapshot(q, (snap) => {
+        const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        if (mode === "test") {
+          // Same marks par kam time upar (client side, index ki zaroorat nahi)
+          list.sort((a, b) => (b.marks - a.marks) || ((a.timeTaken ?? 0) - (b.timeTaken ?? 0)));
+        }
+        const ranked = assignRanks(list, key);
+        board.innerHTML = ranked.map((x, i) => {
+          const attempted = (x.correct ?? 0) + (x.wrong ?? 0);
+          return `<div class="lb ${x.id === user.uid ? "me" : ""} ${x.rank <= 3 ? "top" + x.rank : ""}" style="animation-delay:${Math.min(i, 12) * 40}ms">
+            <div class="row"><span><b>#${x.rank}</b> ${["", "🥇", "🥈", "🥉"][x.rank] || ""} ${esc(x.name)}</span><b>${x[key]}</b></div>
+            <small class="muted">${esc(x.studentId)}${mode === "test" ? ` · Attempted ${attempted} · Acc ${x.accuracy ?? "-"}%` : ""}</small>
+          </div>`;
+        }).join("") || `<p class="muted">Abhi koi graded result nahi.</p>`;
+      }, (err) => (board.innerHTML = `<p class="err">${esc(friendlyError(err))}</p>`));
+    };
+    document.getElementById("tTest").onclick = () => load("test");
+    document.getElementById("tAll").onclick = () => load("all");
+    load("test");
+  }
+}
+
+/* =====================================================================
+   ADMIN PANEL  (URL: /#admin)  — data ki security Firestore rules se hai
+   ===================================================================== */
+function startAdmin() {
+  const app = document.getElementById("app");
+  const content = () => document.getElementById("content");
+
+  onAuthStateChanged(auth, async (u) => {
+    try {
+      if (u && (await isAdminEmail(u.email))) showPanel("dashboard");
+      else showLogin();
+    } catch (err) { showBootError(err); }
+  });
+
+  function showLogin() {
+    app.innerHTML = `
+      <div class="auth">
+        <h1 class="brand">${APP_NAME}</h1>
+        <p class="muted" style="text-align:center">Admin Login</p>
+        <form>
+          <label>Admin Email</label><input name="email" type="email" required>
+          <label>Password</label><input name="password" type="password" required>
+          <button type="submit" style="width:100%">Login</button>
+        </form>
+        <p id="msg" class="err"></p>
+      </div>`;
+    app.querySelector("form").onsubmit = async (e) => {
+      e.preventDefault();
+      const f = e.target;
+      try {
+        const c = await signInWithEmailAndPassword(auth, f.email.value.trim(), f.password.value);
+        if (!(await isAdminEmail(c.user.email))) {
+          await signOut(auth);
+          document.getElementById("msg").textContent = "Ye admin account nahi hai";
+        }
+      } catch (err) { document.getElementById("msg").textContent = friendlyError(err); }
+    };
+  }
+
+  const TABS = [["dashboard", "Dashboard"], ["upload", "Upload Test"], ["tests", "Tests"], ["students", "Students"], ["notices", "Notices"], ["doubts", "Doubts"], ["admins", "Admins"], ["audit", "Audit"], ["gd", "GD Rooms"], ["turn", "TURN"]];
+
+  function showPanel(tab) {
+    app.innerHTML = `
+      <header class="topbar"><b>${APP_NAME} · Admin</b><button id="logout" class="ghost small">Logout</button></header>
+      <nav class="admin-nav">${TABS.map(([k, l]) =>
+        `<button data-tab="${k}" class="${k === tab ? "" : "ghost"}">${l}</button>`).join("")}</nav>
+      <main class="wrap" id="content"></main>
+      ${FOOTER}`;
+    document.getElementById("logout").onclick = () => signOut(auth);
+    app.querySelectorAll("nav button").forEach((b) => (b.onclick = () => showPanel(b.dataset.tab)));
+    // Role ke hisaab se tabs chhupao (UI level; asli security rules mein hai)
+    const allowedTabs = ROLE === "super" ? TABS.map(([k]) => k)
+      : ROLE === "grader" ? ["dashboard", "tests", "students", "doubts"]
+      : ["dashboard", "tests", "students"];
+    app.querySelectorAll("nav button").forEach((b) => { if (!allowedTabs.includes(b.dataset.tab)) b.remove(); });
+    if (tab === "dashboard") renderStats();
+    if (tab === "upload") renderUpload();
+    if (tab === "tests") renderTests();
+    if (tab === "students") renderStudents();
+    if (tab === "notices") renderNotices();
+    if (tab === "doubts") renderDoubts();
+    if (tab === "admins") renderAdmins();
+    if (tab === "audit") renderAudit();
+    if (tab === "gd") renderGD();
+    if (tab === "turn") renderTurn();
+  }
+
+  /* ---------- DASHBOARD ---------- */
+  async function renderStats() {
+    content().innerHTML = `<h2>Dashboard</h2><div id="st"><p class="muted">Loading...</p></div>`;
+    const users = await getDocs(collection(db, "users"));
+    const tests = await getDocs(collection(db, "tests"));
+    let attempts = 0, sum = 0, graded = 0;
+    for (const t of tests.docs) {
+      const res = await getDocs(collection(db, "tests", t.id, "results"));
+      res.docs.forEach((r) => {
+        attempts++;
+        const d = r.data();
+        if (d.marks !== undefined) { graded++; sum += d.marks; }
+      });
+    }
+    document.getElementById("st").innerHTML = `
+      <div class="stat-grid">
+        <div><b>${users.size}</b><small>Students</small></div>
+        <div><b>${tests.size}</b><small>Tests</small></div>
+        <div><b>${attempts}</b><small>Attempts</small></div>
+      </div>
+      <p class="muted">Average marks (graded): ${graded ? (sum / graded).toFixed(2) : "-"}</p>`;
+  }
+
+  /* ---------- UPLOAD ---------- */
+  function renderUpload() {
+    content().innerHTML = `
+      <h2>Test Upload (.txt)</h2>
+      <p class="muted">Format: TITLE, DURATION, NEGATIVE, MARKS, GROUP (X ya Y, optional), phir Q1 / A) B) C) D) / ANS / EXP blocks.</p>
+      <input type="file" id="file" accept=".txt">
+      <div id="preview"></div>
+      <label>Start (IST)</label><input type="datetime-local" id="start">
+      <label>End (IST)</label><input type="datetime-local" id="end">
+      <button id="save" disabled style="width:100%">Save Test</button>
+      <p id="msg" class="err"></p>`;
+
+    let parsed = null;
+    const file = document.getElementById("file");
+    const preview = document.getElementById("preview");
+    const save = document.getElementById("save");
+    const msg = (t, c = "err") => { const el = document.getElementById("msg"); el.className = c; el.textContent = t; };
+
+    file.onchange = async () => {
+      const f = file.files[0];
+      if (!f) return;
+      try {
+        parsed = parseTestTxt(await f.text());
+        preview.innerHTML = `<div class="card"><b>${esc(parsed.meta.title)}</b>
+          <small>Group ${parsed.meta.group} · ${parsed.questions.length} Q · ${parsed.meta.duration} min · +${parsed.meta.marks} / -${parsed.meta.negative}</small></div>`;
+        save.disabled = false;
+        msg("");
+      } catch (err) {
+        parsed = null;
+        save.disabled = true;
+        preview.innerHTML = `<p class="err">${esc(err.message)}</p>`;
+      }
+    };
+
+    save.onclick = async () => {
+      const s = new Date(document.getElementById("start").value);
+      const en = new Date(document.getElementById("end").value);
+      if (!parsed) return msg("Pehle sahi txt file select karo");
+      if (isNaN(s) || isNaN(en) || en <= s) return msg("Start aur end sahi daalo");
+      save.disabled = true;
+      msg("Save ho raha hai...", "ok");
+      try {
+        await saveTest(parsed, s, en);
+        msg("Test save ho gaya. Schedule ke hisaab se students ko dikhega.", "ok");
+      } catch (err) { msg(friendlyError(err)); }
+      save.disabled = false;
+    };
+  }
+
+  async function saveTest(parsed, startAt, endAt) {
+    const { meta, questions } = parsed;
+    const id = newId(meta.title);
+    const publicQs = questions.map((q, i) => ({ no: i + 1, q: q.q, opts: q.opts, topic: q.topic || "General" }));
+    const answers = {}, explanations = {};
+    questions.forEach((q, i) => { answers[i + 1] = q.ans; explanations[i + 1] = q.exp || ""; });
+
+    await setDoc(doc(db, "tests", id), {
+      meta, questions: publicQs, totalQuestions: questions.length,
+      startAt: Timestamp.fromDate(startAt), endAt: Timestamp.fromDate(endAt),
+      active: true, createdAt: serverTimestamp(),   // schedule ke hisaab se khud live
+    });
+    await setDoc(doc(db, "tests", id, "answers", "key"), { answers });
+    await setDoc(doc(db, "tests", id, "answers", "explain"), { answers, explanations });
+    return id;
+  }
+
+  /* ---------- TESTS ---------- */
+  async function renderTests() {
+    content().innerHTML = `<h2>Tests</h2><div id="list"><p class="muted">Loading...</p></div>`;
+    const list = document.getElementById("list");
+    const snap = await getDocs(query(collection(db, "tests"), orderBy("createdAt", "desc")));
+
+    list.innerHTML = snap.docs.map((d) => {
+      const t = d.data();
+      return `<div class="card">
+        <b>${esc(t.meta.title)}</b> <span class="muted">Group ${esc(t.meta.group || "-")}</span>
+        <small>${t.totalQuestions} Q · ${fmtDate(t.startAt.toMillis())} → ${fmtDate(t.endAt.toMillis())} · ${t.active ? "ACTIVE" : "inactive"}</small>
+        <div class="acts" style="margin-top:8px">
+          <button class="small" data-act="toggle" data-id="${d.id}" data-on="${t.active}">${t.active ? "Deactivate" : "Activate"}</button>
+          <button class="small" data-act="grade" data-id="${d.id}">Grade</button>
+          <button class="small ghost" data-act="results" data-id="${d.id}">Results</button>
+          <button class="small ghost" data-act="questions" data-id="${d.id}">Questions</button>
+          <button class="small ghost" data-act="dup" data-id="${d.id}">Duplicate (+7 din)</button>
+          <button class="small danger" data-act="del" data-id="${d.id}">Delete test</button>
+        </div>
+        <div id="out-${d.id}" class="muted"></div>
+      </div>`;
+    }).join("") || `<p class="muted">Koi test nahi hai.</p>`;
+
+    list.querySelectorAll("button[data-act]").forEach((b) => { if (!can(b.dataset.act)) b.remove(); });
+    list.onclick = async (e) => {
+      const b = e.target.closest("button");
+      if (!b) return;
+      const { act, id, uid } = b.dataset;
+      const out = document.getElementById(`out-${id}`);
+      try {
+        if (act === "toggle") {
+          await updateDoc(doc(db, "tests", id), { active: b.dataset.on !== "true" });
+          renderTests();
+        }
+        if (act === "grade") {
+          if (!confirm("Grade karein? Marks aur overall leaderboard update honge.")) return;
+          out.textContent = "Grading ho rahi hai...";
+          await gradeTest(id, out);
+        }
+        if (act === "results") await showResults(id, out);
+        if (act === "detail") await showAnswers(id, uid, out);
+        if (act === "reattempt") await reattempt(id, uid, out);
+        if (act === "questions") await editQuestions(id);
+        if (act === "dup") await duplicateTest(id, out);
+        if (act === "del") await deleteTestFully(id, out);
+        if (act === "csv") await exportCsv(id, out);
+        if (act === "analysis") await showAnalysis(id, out);
+      } catch (err) {
+        out.className = "err";
+        out.textContent = friendlyError(err);
+      }
+    };
+  }
+
+  async function gradeTest(id, out) {
+    const t = (await getDoc(doc(db, "tests", id))).data();
+    const key = (await getDoc(doc(db, "tests", id, "answers", "key"))).data().answers;
+    const res = await getDocs(collection(db, "tests", id, "results"));
+    const nos = Object.keys(key);
+
+    const graded = res.docs.map((d) => {
+      const r = d.data();
+      let c = 0, w = 0, u = 0;
+      for (const no of nos) {
+        const sel = r.answers?.[no];
+        if (!sel) u++;
+        else if (sel === key[no]) c++;
+        else w++;
+      }
+      const attempted = c + w;
+      return {
+        uid: d.id, ref: d.ref, name: r.name, studentId: r.studentId,
+        marks: +(c * t.meta.marks - w * t.meta.negative).toFixed(2),
+        correct: c, wrong: w, unattempted: u,
+        accuracy: attempted ? +((c / attempted) * 100).toFixed(2) : 0,
+      };
+    });
+
+    for (let i = 0; i < graded.length; i += 400) {
+      const batch = writeBatch(db);
+      graded.slice(i, i + 400).forEach((g) =>
+        batch.update(g.ref, {
+          marks: g.marks, correct: g.correct, wrong: g.wrong, unattempted: g.unattempted,
+          accuracy: g.accuracy, totalMarks: nos.length * t.meta.marks, gradedAt: serverTimestamp(),
+        }));
+      await batch.commit();
+    }
+
+    // Overall leaderboard: har test ka marks overall/{uid}.perTest mein, total recompute
+    await Promise.all(graded.map(async (g) => {
+      const oRef = doc(db, "overall", g.uid);
+      const prev = (await getDoc(oRef)).data()?.perTest || {};
+      const perTest = { ...prev, [id]: g.marks };
+      const total = +Object.values(perTest).reduce((s, v) => s + v, 0).toFixed(2);
+      await setDoc(oRef, { name: g.name, studentId: g.studentId, perTest, total, updatedAt: serverTimestamp() });
+    }));
+
+    await audit("grade", `${id} (${graded.length} results)`);
+    out.className = "ok";
+    out.textContent = `Graded ${graded.length} results. Leaderboard update ho gaya.`;
+  }
+
+  async function showResults(id, out) {
+    const t = (await getDoc(doc(db, "tests", id))).data();
+    const res = await getDocs(collection(db, "tests", id, "results"));
+    const rows = res.docs.map((d) => ({ uid: d.id, ...d.data() }))
+      .sort((x, y) => (y.marks ?? -1e9) - (x.marks ?? -1e9));
+    const flagged = rows.filter((r) => cheatFlags(r, t.totalQuestions).length);
+    out.className = "";
+    out.innerHTML = rows.length
+      ? `<div class="acts" style="margin-top:8px">
+          ${can("csv") ? `<button class="small" data-act="csv" data-id="${id}">CSV download</button>` : ""}
+          ${can("analysis") ? `<button class="small ghost" data-act="analysis" data-id="${id}">Question analysis</button>` : ""}
+        </div>
+        <p class="${flagged.length ? "err" : "ok"}">Flagged students: ${flagged.length} / ${rows.length}</p>
+        <div class="card">${rows.map((r, i) => {
+          const fl = cheatFlags(r, t.totalQuestions);
+          return `<div class="row" style="padding:4px 0"><span>${i + 1}. ${esc(r.name)} (${esc(r.studentId)})
+            ${fl.length ? `<span class="badge" style="background:#C6402B;color:#fff">FLAG</span>` : ""}</span>
+            <span><b>${r.marks ?? "pending"}</b>
+            ${can("detail") ? `<button class="small ghost" data-act="detail" data-id="${id}" data-uid="${r.uid}">Detail</button>` : ""}
+            ${can("reattempt") ? `<button class="small danger" data-act="reattempt" data-id="${id}" data-uid="${r.uid}">Reattempt</button>` : ""}</span></div>
+            <small class="muted">Correct ${r.correct ?? "-"} · Wrong ${r.wrong ?? "-"} · Time ${fmtSec(r.timeTaken || 0)} · Tab switch ${r.tabSwitches ?? 0} · Copy try ${r.copyAttempts ?? 0}</small>
+            ${fl.length ? `<small class="err">${esc(fl.join(" · "))}</small>` : ""}`;
+        }).join("")}</div>`
+      : `Koi attempt nahi`;
+  }
+
+  async function exportCsv(id, out) {
+    const res = await getDocs(collection(db, "tests", id, "results"));
+    const head = ["Name", "StudentId", "Marks", "Correct", "Wrong", "Unattempted", "Accuracy", "TimeSec", "TabSwitches"];
+    const lines = [head.join(",")].concat(res.docs.map((d) => {
+      const r = d.data();
+      return [r.name, r.studentId, r.marks ?? "", r.correct ?? "", r.wrong ?? "", r.unattempted ?? "", r.accuracy ?? "", r.timeTaken ?? "", r.tabSwitches ?? 0]
+        .map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",");
+    }));
+    const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `${id}-results.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    // Results list ko replace nahi karte, bas chhota note dikhate hain
+    const note = document.createElement("small");
+    note.className = "ok";
+    note.textContent = " CSV download ho gaya";
+    out.appendChild(note);
+  }
+
+  async function showAnalysis(id, out) {
+    const key = (await getDoc(doc(db, "tests", id, "answers", "key"))).data().answers;
+    const res = await getDocs(collection(db, "tests", id, "results"));
+    const total = res.size;
+    const rowsHtml = Object.keys(key).map((no) => {
+      let c = 0, a = 0;
+      res.docs.forEach((d) => {
+        const sel = d.data().answers?.[no];
+        if (sel) { a++; if (sel === key[no]) c++; }
+      });
+      const pct = total ? Math.round((c / total) * 100) : 0;
+      return `<div class="row"><span>Q${no} (attempted ${a})</span><b>${pct}% correct</b></div>`;
+    }).join("");
+    out.querySelector(".analysis")?.remove();
+    const box = document.createElement("div");
+    box.className = "card analysis";
+    box.innerHTML = `<b>Question-wise % correct (${total} students)</b>${rowsHtml}`;
+    out.appendChild(box);
+  }
+
+  async function deleteTestFully(id, out) {
+    if (!confirm("Test aur uske saare results permanently delete honge. Pakka?")) return;
+    let step = "start";
+    try {
+      step = "results";
+      for (const d of (await getDocs(collection(db, "tests", id, "results"))).docs) await deleteDoc(d.ref);
+      step = "starts";
+      for (const d of (await getDocs(collection(db, "tests", id, "starts"))).docs) await deleteDoc(d.ref);
+      step = "answers/key";
+      await deleteDoc(doc(db, "tests", id, "answers", "key"));
+      step = "answers/explain";
+      await deleteDoc(doc(db, "tests", id, "answers", "explain"));
+      step = "overall";
+      const ov = await getDocs(collection(db, "overall"));
+      for (const d of ov.docs) {
+        const o = d.data();
+        if (o.perTest && o.perTest[id] !== undefined) {
+          const pt = { ...o.perTest };
+          delete pt[id];
+          const total = +Object.values(pt).reduce((s, v) => s + v, 0).toFixed(2);
+          await setDoc(d.ref, { ...o, perTest: pt, total, updatedAt: serverTimestamp() });
+        }
+      }
+      step = "test document";
+      await deleteDoc(doc(db, "tests", id));
+    } catch (err) {
+      out.className = "err";
+      out.textContent = `Delete fail hua (step: ${step}). Code: ${err?.code || "n/a"}. Message: ${err?.message || err}`;
+      return;
+    }
+    await audit("test-delete", id);
+    await renderTests();
+    const m = document.createElement("p");
+    m.className = "ok";
+    m.textContent = "Test delete ho gaya";
+    content().prepend(m);
+  }
+
+  async function showAnswers(testId, uid, out) {
+    const t = (await getDoc(doc(db, "tests", testId))).data();
+    const key = (await getDoc(doc(db, "tests", testId, "answers", "key"))).data().answers;
+    const r = (await getDoc(doc(db, "tests", testId, "results", uid))).data();
+    out.className = "";
+    out.innerHTML = `<div class="card"><b>${esc(r.name)} · ${esc(r.studentId)}</b>
+      <small>Marks ${r.marks ?? "pending"} · Correct ${r.correct ?? "-"} · Wrong ${r.wrong ?? "-"} · Unattempted ${r.unattempted ?? "-"}</small>
+      ${t.questions.map((q) => {
+        const mine = r.answers?.[q.no] || "-";
+        const cls = mine === "-" ? "muted" : mine === key[q.no] ? "ok" : "err";
+        return `<div class="row" style="padding:4px 0"><span>Q${q.no}</span>
+          <span class="${cls}">Ans: ${mine} · Correct: ${key[q.no]}</span></div>`;
+      }).join("")}</div>`;
+  }
+
+  // Reattempt: result + start hata do, student dobara test de sakta hai
+  async function reattempt(testId, uid, out) {
+    if (!confirm("Is student ko dobara attempt karne dein? Purana result hat jayega.")) return;
+    await deleteDoc(doc(db, "tests", testId, "results", uid));
+    await deleteDoc(doc(db, "tests", testId, "starts", uid));
+    const oRef = doc(db, "overall", uid);
+    const o = (await getDoc(oRef)).data();
+    if (o) {
+      const perTest = { ...(o.perTest || {}) };
+      delete perTest[testId];
+      const total = +Object.values(perTest).reduce((s, v) => s + v, 0).toFixed(2);
+      await setDoc(oRef, { ...o, perTest, total, updatedAt: serverTimestamp() });
+    }
+    await audit("reattempt", `${testId} / ${uid}`);
+    out.className = "ok";
+    out.textContent = "Reattempt allow ho gaya.";
+  }
+
+  // Duplicate: test copy, 7 din aage, inactive (admin activate karega)
+  async function duplicateTest(id, out) {
+    const t = (await getDoc(doc(db, "tests", id))).data();
+    const key = (await getDoc(doc(db, "tests", id, "answers", "key"))).data();
+    const ex = (await getDoc(doc(db, "tests", id, "answers", "explain"))).data();
+    const nid = newId(t.meta.title);
+    const week = 7 * 24 * 3600 * 1000;
+    await setDoc(doc(db, "tests", nid), {
+      meta: t.meta, questions: t.questions, totalQuestions: t.totalQuestions,
+      startAt: Timestamp.fromMillis(t.startAt.toMillis() + week),
+      endAt: Timestamp.fromMillis(t.endAt.toMillis() + week),
+      active: false, createdAt: serverTimestamp(),
+    });
+    await setDoc(doc(db, "tests", nid, "answers", "key"), key);
+    await setDoc(doc(db, "tests", nid, "answers", "explain"), ex);
+    await audit("duplicate", id);
+    await renderTests();
+    const m = document.createElement("p");
+    m.className = "ok";
+    m.textContent = "Copy ban gayi (inactive). Schedule check karke Activate karo.";
+    content().prepend(m);
+  }
+
+  // Questions editor: txt format mein edit, save par parse hoke replace
+  function buildTxt(t, key, ex) {
+    const lines = [`TITLE: ${t.meta.title}`, `DURATION: ${t.meta.duration}`, `NEGATIVE: ${t.meta.negative}`, `MARKS: ${t.meta.marks}`];
+    if (t.meta.group === "X" || t.meta.group === "Y") lines.push(`GROUP: ${t.meta.group}`);
+    lines.push("");
+    t.questions.forEach((q) => {
+      lines.push(`Q${q.no}: ${q.q}`);
+      if (q.topic && q.topic !== "General") lines.push(`TOPIC: ${q.topic}`);
+      Object.entries(q.opts).forEach(([k, v]) => lines.push(`${k}) ${v}`));
+      lines.push(`ANS: ${key.answers[q.no]}`);
+      lines.push(`EXP: ${ex.explanations?.[q.no] || ""}`);
+      lines.push("");
+    });
+    return lines.join("\n");
+  }
+
+  async function editQuestions(id) {
+    const t = (await getDoc(doc(db, "tests", id))).data();
+    const key = (await getDoc(doc(db, "tests", id, "answers", "key"))).data();
+    const ex = (await getDoc(doc(db, "tests", id, "answers", "explain"))).data();
+    content().innerHTML = `
+      <h2>Questions Edit</h2>
+      <p class="muted">${esc(t.meta.title)} · ${t.totalQuestions} Q. Txt format mein edit karo, naya question add/delete bhi isi mein. Save par test ke questions aur answers replace honge. Agar test grade ho chuka hai to Grade dobara dabana.</p>
+      <textarea id="qtxt" rows="26">${esc(buildTxt(t, key, ex))}</textarea>
+      <button id="qsave" style="width:100%">Save Questions</button>
+      <button id="qback" class="ghost" style="width:100%;margin-top:8px">Back</button>
+      <p id="qmsg"></p>`;
+    document.getElementById("qback").onclick = () => showPanel("tests");
+    document.getElementById("qsave").onclick = async () => {
+      const m = document.getElementById("qmsg");
+      try {
+        const p = parseTestTxt(document.getElementById("qtxt").value);
+        const publicQs = p.questions.map((q, i) => ({ no: i + 1, q: q.q, opts: q.opts, topic: q.topic || "General" }));
+        const answers = {}, explanations = {};
+        p.questions.forEach((q, i) => { answers[i + 1] = q.ans; explanations[i + 1] = q.exp || ""; });
+        await setDoc(doc(db, "tests", id), {
+          ...t, meta: p.meta, questions: publicQs, totalQuestions: p.questions.length,
+        });
+        await setDoc(doc(db, "tests", id, "answers", "key"), { answers });
+        await setDoc(doc(db, "tests", id, "answers", "explain"), { answers, explanations });
+        m.className = "ok";
+        await audit("questions-save", id);
+        m.textContent = `Save ho gaya (${p.questions.length} questions).`;
+      } catch (err) {
+        m.className = "err";
+        m.textContent = err.message;
+      }
+    };
+  }
+
+  /* ---------- STUDENTS ---------- */
+  async function renderStudents() {
+    content().innerHTML = `
+      <h2>Students</h2>
+      <input id="search" placeholder="Naam, Student ID ya mobile se search">
+      <div id="list"><p class="muted">Loading...</p></div>
+      <div id="detail"></div>`;
+    const snap = await getDocs(collection(db, "users"));
+    const users = snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
+    const list = document.getElementById("list");
+
+    const draw = (q = "") => {
+      const f = q.toLowerCase();
+      const shown = users.filter((u) =>
+        !f || [u.name, u.studentId, u.mobile].some((v) => String(v || "").toLowerCase().includes(f)));
+      list.innerHTML = `<p class="muted">${shown.length} students</p>` + shown.map((u) => `
+        <div class="card" style="cursor:pointer" data-uid="${u.uid}">
+          <b>${esc(u.name)}</b>${u.blocked ? `<span class="badge" style="background:#C6402B;color:#fff">BLOCKED</span>` : ""}
+          <small>${esc(u.studentId)} · ${esc(u.mobile)} · ${esc(u.email)}</small>
+        </div>`).join("");
+    };
+    draw();
+    document.getElementById("search").oninput = (e) => draw(e.target.value);
+    list.onclick = (e) => {
+      const card = e.target.closest("[data-uid]");
+      if (card) showStudent(users.find((u) => u.uid === card.dataset.uid));
+    };
+  }
+
+  async function showStudent(u) {
+    const detail = document.getElementById("detail");
+    detail.innerHTML = `<p class="muted">Loading performance...</p>`;
+    const tests = await getDocs(collection(db, "tests"));
+    const rows = await Promise.all(tests.docs.map(async (d) => {
+      const r = await getDoc(doc(db, "tests", d.id, "results", u.uid));
+      return { id: d.id, title: d.data().meta.title, r: r.exists() ? r.data() : null, totalQ: d.data().totalQuestions };
+    }));
+    detail.innerHTML = `
+      <h3>${esc(u.name)} · ${esc(u.studentId)}</h3>
+      <p class="muted">${esc(u.mobile)} · ${esc(u.email)}</p>
+      <div class="acts"><button id="blk" class="${u.blocked ? "" : "danger"}">${u.blocked ? "Unblock" : "Block student"}</button></div>
+      ${rows.map((x) => x.r
+        ? `<div class="card"><b>${esc(x.title)}</b>
+             <small>Marks: ${x.r.marks ?? "pending"} · Correct ${x.r.correct ?? "-"} · Wrong ${x.r.wrong ?? "-"} · Time ${fmtSec(x.r.timeTaken || 0)}</small>
+             <small>Tab switch ${x.r.tabSwitches ?? 0} · Copy try ${x.r.copyAttempts ?? 0} · ${cheatFlags(x.r, x.totalQ).join(", ") || "clean"}</small>
+             <div class="acts" style="margin-top:6px"><button class="small danger" data-rt="${x.id}">Reattempt</button></div></div>`
+        : `<div class="card muted">${esc(x.title)}: Not attempted</div>`).join("")}`;
+    if (!can("block")) document.getElementById("blk").remove(); else document.getElementById("blk").onclick = async () => {
+      await updateDoc(doc(db, "users", u.uid), { blocked: !u.blocked });
+      await audit(u.blocked ? "unblock" : "block", u.studentId);
+      u.blocked = !u.blocked;
+      showStudent(u);
+    };
+    detail.querySelectorAll("[data-rt]").forEach((b) => (b.onclick = async () => {
+      const out = document.createElement("p");
+      detail.appendChild(out);
+      await reattempt(b.dataset.rt, u.uid, out);
+    }));
+  }
+
+  /* ---------- NOTICES (add / edit / delete) ---------- */
+  async function renderNotices() {
+    content().innerHTML = `
+      <h2>Notices</h2>
+      <input id="nt" placeholder="Title">
+      <textarea id="nb" rows="4" placeholder="Message"></textarea>
+      <input type="hidden" id="nid" value="">
+      <button id="npub" style="width:100%">Publish</button>
+      <p id="nmsg" class="muted"></p>
+      <div id="nl"></div>`;
+    const load = async () => {
+      const snap = await getDocs(query(collection(db, "notices"), orderBy("createdAt", "desc"), limit(50)));
+      document.getElementById("nl").innerHTML = snap.docs.map((d) => {
+        const n = d.data();
+        return `<div class="card"><b>${esc(n.title)}</b><p class="muted">${esc(n.body)}</p>
+          <div class="acts"><button class="small ghost" data-ne="${d.id}">Edit</button><button class="small danger" data-nd="${d.id}">Delete</button></div></div>`;
+      }).join("");
+    };
+    document.getElementById("nl").onclick = async (e) => {
+      const ed = e.target.closest("[data-ne]");
+      const dl = e.target.closest("[data-nd]");
+      if (ed) {
+        const n = (await getDoc(doc(db, "notices", ed.dataset.ne))).data();
+        document.getElementById("nt").value = n.title;
+        document.getElementById("nb").value = n.body;
+        document.getElementById("nid").value = ed.dataset.ne;
+      }
+      if (dl && confirm("Notice delete karein?")) {
+        await deleteDoc(doc(db, "notices", dl.dataset.nd));
+        await audit("notice-delete", dl.dataset.nd);
+        load();
+      }
+    };
+    document.getElementById("npub").onclick = async () => {
+      const title = document.getElementById("nt").value.trim();
+      const body = document.getElementById("nb").value.trim();
+      const id = document.getElementById("nid").value;
+      const m = document.getElementById("nmsg");
+      if (!title || !body) { m.className = "err"; m.textContent = "Title aur message dono daalo"; return; }
+      if (id) {
+        await updateDoc(doc(db, "notices", id), { title, body, updatedAt: serverTimestamp() });
+        await audit("notice-edit", id);
+      } else {
+        await addDoc(collection(db, "notices"), { title, body, createdAt: serverTimestamp() });
+        await audit("notice-add", title);
+      }
+      m.className = "ok";
+      m.textContent = "Notice save ho gaya";
+      document.getElementById("nt").value = "";
+      document.getElementById("nb").value = "";
+      document.getElementById("nid").value = "";
+      load();
+    };
+    load();
+  }
+
+  /* ---------- DOUBTS ---------- */
+  async function renderDoubts() {
+    content().innerHTML = `<h2>Doubts</h2><div id="dl"><p class="muted">Loading...</p></div>`;
+    const snap = await getDocs(query(collection(db, "doubts"), orderBy("createdAt", "desc"), limit(100)));
+    const el = document.getElementById("dl");
+    el.innerHTML = snap.docs.length ? snap.docs.map((d) => {
+      const x = d.data();
+      return `<div class="card"><b>${esc(x.name)}</b> <small>${esc(x.studentId)}</small><p>${esc(x.text)}</p>
+        <textarea id="rp-${d.id}" rows="2" placeholder="Reply">${esc(x.reply || "")}</textarea>
+        <button class="small" data-reply="${d.id}">Reply save</button></div>`;
+    }).join("") : `<p class="muted">Koi doubt nahi.</p>`;
+    if (!can("reply")) el.querySelectorAll("[data-reply]").forEach((x) => x.remove());
+    el.onclick = async (e) => {
+      const b = e.target.closest("[data-reply]");
+      if (!b) return;
+      const id = b.dataset.reply;
+      const text = document.getElementById(`rp-${id}`).value.trim();
+      await updateDoc(doc(db, "doubts", id), { reply: text });
+      await audit("doubt-reply", id);
+      b.textContent = "Saved";
+    };
+  }
+
+  /* ---------- ADMINS (multiple admins) ---------- */
+  async function renderAdmins() {
+    content().innerHTML = `<h2>Admins & Roles</h2>
+      <p class="muted">Super: sab kuch. Grader: grade, results, reattempt, doubt reply. Viewer: sirf dekhna. Main admin (${esc(ADMIN_EMAIL)}) hamesha Super hai.</p>
+      <input id="ae" placeholder="admin email">
+      <select id="arole">
+        <option value="grader">Grader</option>
+        <option value="viewer">Viewer</option>
+        <option value="super">Super</option>
+      </select>
+      <button id="aadd" style="width:100%">Admin add / role update</button>
+      <p id="amsg" class="muted"></p>
+      <div id="al"></div>`;
+    const load = async () => {
+      const snap = await getDocs(collection(db, "admins"));
+      document.getElementById("al").innerHTML = snap.docs.map((d) =>
+        `<div class="card row"><span>${esc(d.id)} <span class="badge">${esc(d.data().role || "viewer")}</span></span>
+         <span class="acts"><button class="small ghost" data-role="${esc(d.id)}">Role badlo</button>
+         <button class="small danger" data-rm="${esc(d.id)}">Remove</button></span></div>`
+      ).join("") || `<p class="muted">Koi extra admin nahi.</p>`;
+    };
+    document.getElementById("aadd").onclick = async () => {
+      const e = document.getElementById("ae").value.trim().toLowerCase();
+      const role = document.getElementById("arole").value;
+      const m = document.getElementById("amsg");
+      if (!/^\S+@\S+\.\S+$/.test(e)) { m.className = "err"; m.textContent = "Sahi email daalo"; return; }
+      if (e === ADMIN_EMAIL) { m.className = "err"; m.textContent = "Main admin ka role change nahi hota"; return; }
+      await setDoc(doc(db, "admins", e), { role, addedAt: serverTimestamp() });
+      await audit("admin-role", `${e} -> ${role}`);
+      document.getElementById("ae").value = "";
+      m.className = "ok"; m.textContent = `${e} ka role ${role} set ho gaya`;
+      load();
+    };
+    document.getElementById("al").onclick = async (ev) => {
+      const r = ev.target.closest("[data-role]");
+      const x = ev.target.closest("[data-rm]");
+      if (r) {
+        const cur = (await getDoc(doc(db, "admins", r.dataset.role))).data()?.role || "viewer";
+        const next = cur === "super" ? "grader" : cur === "grader" ? "viewer" : "super";
+        await setDoc(doc(db, "admins", r.dataset.role), { role: next, addedAt: serverTimestamp() });
+        await audit("admin-role", `${r.dataset.role} -> ${next}`);
+        load();
+      }
+      if (x) {
+        await deleteDoc(doc(db, "admins", x.dataset.rm));
+        await audit("admin-remove", x.dataset.rm);
+        load();
+      }
+    };
+    load();
+  }
+
+  /* ---------- AUDIT LOG ---------- */
+  async function renderAudit() {
+    content().innerHTML = `<h2>Audit Log</h2><div id="au"><p class="muted">Loading...</p></div>`;
+    const snap = await getDocs(query(collection(db, "audit"), orderBy("at", "desc"), limit(100)));
+    document.getElementById("au").innerHTML = snap.docs.map((d) => {
+      const x = d.data();
+      return `<div class="card"><b>${esc(x.action)}</b><small>${esc(x.by)} · ${x.at ? fmtDate(x.at.toMillis()) : ""}</small><small>${esc(x.detail)}</small></div>`;
+    }).join("") || `<p class="muted">Abhi koi action nahi.</p>`;
+  }
+
+  /* ---------- GD ROOMS (5 rooms: assign, host, naam) ---------- */
+  async function renderGD() {
+    const ROOMS = ["room-1", "room-2", "room-3", "room-4", "room-5"];
+    content().innerHTML = `<h2>GD Rooms</h2>
+      <p class="muted">Students ko room assign karo, har room ka host badlo, naam badlo. Admin "Admin join karo" se kisi bhi room mein join kar sakta hai.</p>
+      <p id="gdmsg" class="muted"></p>
+      <div id="gdrooms"></div>
+      <h3>Students & room assignment</h3>
+      <div id="gdstudents"><p class="muted">Loading...</p></div>`;
+    const st = { config: {}, members: {}, host: {}, assign: {}, students: [] };
+    const msg = (t, ok = true) => { const el = document.getElementById("gdmsg"); if (el) { el.className = ok ? "ok" : "err"; el.textContent = t; } };
+    const nameOf = (id, i) => (st.config[id] && st.config[id].name) || `Room ${i + 1}`;
+    const draw = () => {
+      const rooms = document.getElementById("gdrooms");
+      if (!rooms) return;
+      rooms.innerHTML = ROOMS.map((id, i) => {
+        const mem = Object.entries(st.members[id] || {});
+        const opts = mem.map(([uid, m]) => `<option value="${esc(uid)}" ${st.host[id] === uid ? "selected" : ""}>${esc(m.name)}</option>`).join("");
+        const names = mem.map(([uid, m]) => `${esc(m.name)}${st.host[id] === uid ? " (host)" : ""}${m.role === "admin" ? " [admin]" : ""}`).join(", ");
+        return `<div class="card">
+          <div class="row"><b>${esc(nameOf(id, i))}</b><small>${id} · ${mem.length} online</small></div>
+          <div class="acts"><input data-rename-in="${id}" value="${esc(nameOf(id, i))}" style="margin:0;flex:1"><button class="small ghost" data-rename="${id}">Naam save</button></div>
+          <div class="acts"><span class="muted">Host:</span><select data-host="${id}" style="width:auto;margin:0"><option value="">(koi nahi)</option>${opts}</select></div>
+          <p class="muted" style="margin:6px 0">${names || "Koi online nahi"}</p>
+          ${st.host[id] && !(st.members[id] && st.members[id][st.host[id]]) ? '<p class="err" style="margin:6px 0">Host offline hai, naya host chuno</p>' : ""}
+          <div class="acts"><a href="/gd/?room=${id}" target="_blank" rel="noopener"><button class="small">Admin join karo</button></a>
+          <button class="small danger" data-endsess="${id}">Session band (uploads delete)</button></div>
+        </div>`;
+      }).join("");
+    };
+    const drawStudents = () => {
+      const box = document.getElementById("gdstudents");
+      if (!box) return;
+      box.innerHTML = st.students.length ? st.students.map((u) => `<div class="card row">
+        <span><b>${esc(u.name)}</b> <small>${esc(u.studentId)}</small></span>
+        <select data-assign="${esc(u.uid)}" style="width:auto;margin:0">
+          <option value="">(none)</option>
+          ${ROOMS.map((id, i) => `<option value="${id}" ${st.assign[u.uid] === id ? "selected" : ""}>${esc(nameOf(id, i))}</option>`).join("")}
+        </select></div>`).join("") : `<p class="muted">Koi registered student nahi.</p>`;
+    };
+    dbOnValue(dbRef(rtdb, "gdConfig"), (s) => { st.config = s.val() || {}; draw(); });
+    ROOMS.forEach((id) => {
+      dbOnValue(dbRef(rtdb, `gdRooms/${id}/members`), (s) => { st.members[id] = s.val() || {}; draw(); });
+      dbOnValue(dbRef(rtdb, `gdRooms/${id}/host`), (s) => { st.host[id] = s.val() || null; draw(); });
+    });
+    dbOnValue(dbRef(rtdb, "gdAssign"), (s) => { st.assign = s.val() || {}; drawStudents(); });
+    const snap = await getDocs(collection(db, "users"));
+    st.students = snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
+    drawStudents();
+    draw();
+
+    content().onchange = async (e) => {
+      const hostSel = e.target.closest("[data-host]");
+      const asg = e.target.closest("[data-assign]");
+      try {
+        if (hostSel) {
+          const id = hostSel.dataset.host, uid = hostSel.value;
+          if (uid) await dbSet(dbRef(rtdb, `gdRooms/${id}/host`), uid);
+          else await dbRemove(dbRef(rtdb, `gdRooms/${id}/host`));
+          await audit("gd-host", `${id} -> ${uid || "none"}`);
+          msg("Host update ho gaya");
+        }
+        if (asg) {
+          const uid = asg.dataset.assign, room = asg.value;
+          if (room) await dbSet(dbRef(rtdb, `gdAssign/${uid}`), room);
+          else await dbRemove(dbRef(rtdb, `gdAssign/${uid}`));
+          await audit("gd-assign", `${uid} -> ${room || "none"}`);
+          msg("Assignment save ho gaya. Student ka page apne aap naye room mein chala jayega.");
+        }
+      } catch (err) { msg("Fail: " + (err.code || "") + " " + (err.message || err), false); }
+    };
+    content().onclick = async (e) => {
+      const es = e.target.closest("[data-endsess]");
+      if (es) {
+        const id = es.dataset.endsess;
+        try {
+          await dbRemove(dbRef(rtdb, `gdRooms/${id}/uploads`));
+          await dbRemove(dbRef(rtdb, `gdRooms/${id}/session`));
+          await audit("gd-session-end", id);
+          msg(`${id} ka session band ho gaya, sab uploads delete`);
+        } catch (err) { msg("Fail: " + (err.code || "") + " " + (err.message || err), false); }
+        return;
+      }
+      const r = e.target.closest("[data-rename]");
+      if (!r) return;
+      const id = r.dataset.rename;
+      const v = document.querySelector(`[data-rename-in="${id}"]`).value.trim().slice(0, 40);
+      if (!v) return msg("Naam khali nahi ho sakta", false);
+      try {
+        await dbSet(dbRef(rtdb, `gdConfig/${id}/name`), v);
+        await audit("gd-rename", `${id} -> ${v}`);
+        msg("Naam save ho gaya");
+      } catch (err) { msg("Fail: " + (err.code || "") + " " + (err.message || err), false); }
+    };
+  }
+
+  /* ---------- TURN (admin upload / remove) ---------- */
+  async function renderTurn() {
+    content().innerHTML = `<h2>TURN server</h2>
+      <p class="muted">Metered ka "Show ICE Servers Array" JSON yahan paste karo aur Save dabao. GD room turant use karega. Remove dabane par sirf STUN chalega.</p>
+      <p id="tstatus" class="muted">Loading...</p>
+      <textarea id="tjson" rows="8" placeholder='[{"urls":"stun:..."},{"urls":"turn:...","username":"...","credential":"..."}]'></textarea>
+      <div class="acts"><button id="tsave">Save TURN</button><button id="tdel" class="danger">Remove TURN</button></div>
+      <p id="tmsg" class="muted"></p>`;
+    const ref = doc(db, "turnConfig", "active");
+    const show = async () => {
+      const snap = await getDoc(ref);
+      const d = snap.exists() ? snap.data() : null;
+      const el = document.getElementById("tstatus");
+      if (el) el.textContent = d && Array.isArray(d.iceServers)
+        ? `Active: ${d.iceServers.length} servers · updated ${d.updatedAt ? fmtDate(d.updatedAt.toMillis()) : "-"}`
+        : "TURN band hai (sirf STUN chalega)";
+    };
+    show();
+    document.getElementById("tsave").onclick = async () => {
+      const m = document.getElementById("tmsg");
+      try {
+        const arr = JSON.parse(document.getElementById("tjson").value.trim());
+        if (!Array.isArray(arr) || !arr.length || !arr.every((x) => x && (typeof x.urls === "string" || Array.isArray(x.urls)))) {
+          throw new Error("JSON array chahiye, har item mein urls ho");
+        }
+        await setDoc(ref, { iceServers: arr, updatedAt: serverTimestamp(), by: auth.currentUser?.email || "" });
+        await audit("turn-save", `${arr.length} servers`);
+        document.getElementById("tjson").value = "";
+        m.className = "ok"; m.textContent = "TURN save ho gaya"; show();
+      } catch (err) { m.className = "err"; m.textContent = err.message || String(err); }
+    };
+    document.getElementById("tdel").onclick = async () => {
+      if (!confirm("TURN hatana hai? GD room sirf STUN par chalega.")) return;
+      const m = document.getElementById("tmsg");
+      try {
+        await deleteDoc(ref);
+        await audit("turn-remove", "");
+        m.className = "ok"; m.textContent = "TURN hat gaya"; show();
+      } catch (err) { m.className = "err"; m.textContent = err.message || String(err); }
+    };
+  }
+
+  /* ---------- HELPERS ---------- */
+  // Roles: super (sab kuch), grader (grade, results, reattempt, doubts reply), viewer (sirf dekhna)
+  let ROLE = null;
+  const PERM = {
+    grader: ["grade", "results", "csv", "analysis", "detail", "reattempt", "reply", "students"],
+    viewer: ["results", "csv", "analysis", "detail", "students"],
+  };
+  function can(act) {
+    if (ROLE === "super") return true;
+    return (PERM[ROLE] || []).includes(act);
+  }
+  async function isAdminEmail(email) {
+    if (!email) return false;
+    if (email === ADMIN_EMAIL) { ROLE = "super"; return true; }
+    try {
+      const snap = await getDoc(doc(db, "admins", email.toLowerCase()));
+      ROLE = snap.exists() ? (snap.data().role || "viewer") : null;
+      return !!ROLE;
+    } catch (_) { ROLE = null; return false; }
+  }
+  // Cheat flags (admin ko dikhte hain, student ko nahi)
+  function cheatFlags(r, totalQ) {
+    const f = [];
+    if ((r.tabSwitches || 0) >= 3) f.push(`Tab switch ${r.tabSwitches}`);
+    if ((r.copyAttempts || 0) >= 3) f.push(`Copy/paste try ${r.copyAttempts}`);
+    if (totalQ && (r.timeTaken || 0) < totalQ * 3) f.push("Bahut jaldi submit");
+    return f;
+  }
+  async function audit(action, detail) {
+    try {
+      await addDoc(collection(db, "audit"), {
+        action, detail: String(detail || ""), by: auth.currentUser?.email || "", at: serverTimestamp(),
+      });
+    } catch (_) { /* audit fail hone se admin action nahi rukega */ }
+  }
+}
+</script>
+</body>
+</html>

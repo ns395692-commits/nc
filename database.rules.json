@@ -1,0 +1,69 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "gdConfig": {
+      ".read": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous'",
+      ".write": "auth.token.email == 'admin@skyboundselite.app'",
+      "$room": {
+        "name": {
+          ".validate": "newData.isString() && newData.val().length <= 40"
+        }
+      }
+    },
+    "gdAssign": {
+      ".read": "auth.token.email == 'admin@skyboundselite.app'",
+      ".write": "auth.token.email == 'admin@skyboundselite.app'",
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider != 'anonymous'",
+        ".validate": "newData.isString() && (newData.val() == 'room-1' || newData.val() == 'room-2' || newData.val() == 'room-3' || newData.val() == 'room-4' || newData.val() == 'room-5')"
+      }
+    },
+    "gdRooms": {
+      "$room": {
+        ".validate": "$room == 'room-1' || $room == 'room-2' || $room == 'room-3' || $room == 'room-4' || $room == 'room-5'",
+        "host": {
+          ".read": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous'",
+          ".write": "auth.token.email == 'admin@skyboundselite.app'"
+        },
+        "timer": {
+          ".read": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous'",
+          ".write": "auth.token.email == 'admin@skyboundselite.app' || (auth != null && root.child('gdRooms/' + $room + '/host').val() === auth.uid)"
+        },
+        "members": {
+          ".read": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous'",
+          "$uid": {
+            ".write": "auth.token.email == 'admin@skyboundselite.app' || (auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider != 'anonymous') || (auth != null && root.child('gdRooms/' + $room + '/host').val() === auth.uid)"
+          }
+        },
+        "messages": {
+          ".read": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous'",
+          "$msgId": {
+            ".write": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous' && newData.child('uid').val() === auth.uid",
+            ".validate": "newData.hasChildren(['uid', 'name', 'text', 'at']) && newData.child('text').isString() && newData.child('text').val().length <= 500 && newData.child('name').isString() && newData.child('name').val().length <= 30"
+          }
+        },
+        "signals": {
+          "$to": {
+            ".read": "auth != null && auth.uid === $to && auth.token.firebase.sign_in_provider != 'anonymous'",
+            "$sigId": {
+              ".write": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous' && newData.child('from').val() === auth.uid"
+            }
+          }
+        },
+        "session": {
+          ".read": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous'",
+          ".write": "auth.token.email == 'admin@skyboundselite.app' || (auth != null && root.child('gdRooms/' + $room + '/host').val() === auth.uid)"
+        },
+        "uploads": {
+          ".read": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous'",
+          ".write": "auth.token.email == 'admin@skyboundselite.app' || (auth != null && root.child('gdRooms/' + $room + '/host').val() === auth.uid)",
+          "$upId": {
+            ".write": "auth != null && auth.token.firebase.sign_in_provider != 'anonymous' && ((!newData.exists() && (data.child('uid').val() === auth.uid || auth.token.email == 'admin@skyboundselite.app' || (auth != null && root.child('gdRooms/' + $room + '/host').val() === auth.uid))) || (newData.exists() && newData.child('uid').val() === auth.uid && root.child('gdRooms/' + $room + '/session/active').val() === true && root.child('gdRooms/' + $room + '/session/startedAt').val() + root.child('gdRooms/' + $room + '/session/durationMs').val() > now))",
+            ".validate": "newData.hasChildren(['uid','name','data','at']) && newData.child('data').isString() && newData.child('data').val().length <= 300000 && newData.child('name').isString() && newData.child('name').val().length <= 30"
+          }
+        }
+      }
+    }
+  }
+}

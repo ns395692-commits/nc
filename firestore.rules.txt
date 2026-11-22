@@ -1,0 +1,142 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+    function signedIn() {
+      return request.auth != null;
+    }
+    // Main admin: Firebase Console mein ye email banani hai
+    function isMain() {
+      return signedIn() && request.auth.token.email == 'admin@skyboundselite.app';
+    }
+    // Staff admin ka role doc: admins/{email} { role: 'super' | 'grader' | 'viewer' }
+    function staffRole() {
+      return get(/databases/$(database)/documents/admins/$(request.auth.token.email)).data.role;
+    }
+    function hasStaffDoc() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+    }
+    function isSuper() {
+      return isMain() || (hasStaffDoc() && staffRole() == 'super');
+    }
+    function canGrade() {
+      return isSuper() || (hasStaffDoc() && staffRole() == 'grader');
+    }
+    function isAdmin() {
+      return isMain() || hasStaffDoc();
+    }
+    function testOf(testId) {
+      return get(/databases/$(database)/documents/tests/$(testId)).data;
+    }
+
+    // ---------- student ID counter ----------
+    match /counters/students {
+      allow read: if signedIn();
+      allow update: if signedIn()
+        && request.resource.data.count == resource.data.count + 1;
+      allow create: if signedIn();
+    }
+
+    // ---------- student profile ----------
+    match /users/{uid} {
+      allow create: if request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['name', 'mobile', 'email', 'studentId', 'createdAt', 'blocked']);
+      allow read: if request.auth.uid == uid || isAdmin();
+      // Block/unblock sirf Super admin
+      allow update: if (request.auth.uid == uid
+          && request.resource.data.studentId == resource.data.studentId
+          && request.resource.data.blocked == resource.data.blocked)
+        || isSuper();
+    }
+
+    // ---------- mobile lock ----------
+    match /mobiles/{mobile} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid']);
+    }
+
+    // ---------- notices: sab padh sakte hain, sirf Super likhta hai ----------
+    match /notices/{id} {
+      allow read: if signedIn();
+      allow write: if isSuper();
+    }
+
+    // ---------- admin roles: sirf main admin add/remove kare ----------
+    match /admins/{email} {
+      allow read: if signedIn();
+      allow write: if isMain();
+    }
+
+    // ---------- doubt box ----------
+    match /doubts/{id} {
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid', 'name', 'studentId', 'text', 'createdAt', 'reply']);
+      allow read: if (signedIn() && resource.data.uid == request.auth.uid) || isAdmin();
+      allow update, delete: if canGrade();
+    }
+
+    // ---------- audit log: sab admin likh sakte hain, sirf Super padh sakta hai ----------
+    match /audit/{id} {
+      allow create: if isAdmin();
+      allow read: if isSuper();
+    }
+
+    // ---------- TURN config: admin upload/remove, logged-in students padhte hain (GD room ke liye) ----------
+    match /turnConfig/{id} {
+      allow read: if signedIn();
+      allow write: if isSuper();
+    }
+
+    // ---------- overall leaderboard: grading ke saath ----------
+    match /overall/{uid} {
+      allow read: if signedIn();
+      allow write: if canGrade();
+    }
+
+    // ---------- tests ----------
+    match /tests/{testId} {
+      allow read: if signedIn();
+      allow create, update, delete: if isSuper();
+
+      // Answer key: Grader padh sakta hai (grading ke liye), sirf Super badal sakta hai
+      match /answers/key {
+        allow read: if canGrade();
+        allow write: if isSuper();
+      }
+
+      // Explanation: test window khatam hone ke baad sab padh sakte hain
+      match /answers/explain {
+        allow read: if signedIn() && request.time > testOf(testId).endAt;
+        allow read: if isAdmin();
+        allow write: if isSuper();
+      }
+
+      // Start time: student apna hi, ek baar
+      match /starts/{uid} {
+        allow read: if request.auth.uid == uid || isAdmin();
+        allow create: if request.auth.uid == uid
+          && request.time >= testOf(testId).startAt
+          && request.time <= testOf(testId).endAt
+          && request.resource.data.keys().hasOnly(['startedAt'])
+          && request.resource.data.startedAt == request.time;
+        allow delete: if canGrade();
+      }
+
+      // Results: student sirf apna, window ke andar, ek baar. Grading/reattempt sirf Grader+
+      match /results/{uid} {
+        allow read: if signedIn();
+        allow create: if request.auth.uid == uid
+          && request.resource.data.uid == uid
+          && request.time >= testOf(testId).startAt
+          && request.time <= testOf(testId).endAt
+          && request.resource.data.keys().hasOnly(['uid', 'name', 'studentId', 'answers', 'timeTaken', 'submittedAt', 'tabSwitches', 'copyAttempts'])
+          && request.resource.data.answers is map;
+        allow update, delete: if canGrade();
+      }
+    }
+  }
+}

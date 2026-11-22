@@ -1,0 +1,27 @@
+SKYBOUND'S ELITE + GD ROOM - VERCEL DEPLOY
+
+1. Firebase Console (emotional-testing)
+   - Realtime Database > Rules: database.rules.json paste karke PUBLISH
+   - Firestore > Rules: firestore.rules.txt paste karke PUBLISH
+   - Authentication: Email/Password ON
+
+2. Vercel
+   - New Project > is folder ki files upload (folder ke ANDAR ki cheezein, folder nahi).
+     Ya GitHub repo connect karo (repo ke ROOT par index.html, gd/, api/ hon).
+   - Framework Preset: Other. Build Command aur Output Directory khali.
+   - Settings > Environment Variables (Production):
+       METERED_APP_NAME = madebyns
+       METERED_API_KEY  = naya key (Sensitive ON)
+   - Deploy / Redeploy (env variables ke baad zaroor Redeploy).
+
+3. Check
+   - https://your-site.vercel.app/            student app
+   - https://your-site.vercel.app/#admin      admin panel
+   - https://your-site.vercel.app/gd/         GD room
+   - https://your-site.vercel.app/api/turn    JSON mein iceServers
+
+4. Admin setup
+   - /#admin > TURN tab: Metered ka ICE JSON paste karke Save (optional; env variable ke bina bhi chalega)
+   - GD Rooms tab: students ko room assign, host set
+
+Note: .txt aur .json rules files Vercel par upload mat karna (Firebase Console mein paste hote hain).
